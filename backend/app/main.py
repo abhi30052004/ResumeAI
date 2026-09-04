@@ -23,7 +23,11 @@ app = FastAPI(
 from .routes import auth, resume, analysis, user, dashboard, jobs, applications
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=".*",
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://resume-ai-three-omega.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
