@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { motion, useSpring, useTransform } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion, useSpring, useTransform, Variants } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { HowItWorksModal } from '../../components/resume-ai/HowItWorksModal';
@@ -8,7 +8,6 @@ export function Hero() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const springX = useSpring(0, { stiffness: 40, damping: 20 });
   const springY = useSpring(0, { stiffness: 40, damping: 20 });
 
@@ -23,14 +22,14 @@ export function Hero() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [springX, springY]);
 
-  const lineVars = {
+  const lineVars: Variants = {
     hidden: { opacity: 0, y: 100, clipPath: 'inset(100% 0 0 0)', filter: 'blur(10px)' },
     show: { 
       opacity: 1, 
       y: 0, 
       clipPath: 'inset(0% 0 0 0)',
       filter: 'blur(0px)',
-      transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } 
+      transition: { duration: 1.2, ease: "easeOut" } 
     }
   };
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -21,7 +20,7 @@ export function Pricing() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, i) => (
+          {plans.map((plan) => (
             <motion.div 
               key={plan.name}
               whileHover={{ y: -10 }}

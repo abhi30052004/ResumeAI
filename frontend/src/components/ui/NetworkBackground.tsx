@@ -34,8 +34,8 @@ export function NetworkBackground() {
       color: string;
 
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * (canvas?.width ?? 800);
+        this.y = Math.random() * (canvas?.height ?? 600);
         this.vx = (Math.random() - 0.5) * 0.6; // Slightly faster but still elegant
         this.vy = (Math.random() - 0.5) * 0.6;
         this.radius = Math.random() * 2.5 + 1; // Slightly larger radius
@@ -43,8 +43,8 @@ export function NetworkBackground() {
       }
 
       update() {
-        if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
-        if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+        if (this.x < 0 || this.x > (canvas?.width ?? 800)) this.vx = -this.vx;
+        if (this.y < 0 || this.y > (canvas?.height ?? 600)) this.vy = -this.vy;
         this.x += this.vx;
         this.y += this.vy;
       }

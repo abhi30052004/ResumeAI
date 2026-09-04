@@ -29,7 +29,7 @@ function StatItem({ stat }: { stat: any }) {
   return (
     <div ref={ref} className="flex flex-col items-center justify-center text-center group cursor-default">
       <div className="text-8xl lg:text-9xl font-bold tracking-tighter text-[#111111] flex items-center group-hover:text-[#635BFF] transition-colors duration-500">
-        {isInView ? <AnimatedCounter from={0} to={stat.num} duration={2} /> : "0"}
+        {isInView ? <AnimatedCounter value={stat.num} duration={2} /> : "0"}
         <span className="text-6xl lg:text-7xl ml-1 text-[#635BFF]">{stat.suffix}</span>
       </div>
       <div className="text-xl font-mono uppercase tracking-widest text-[#666666] mt-4 font-semibold">

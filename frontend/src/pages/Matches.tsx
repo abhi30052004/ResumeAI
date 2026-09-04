@@ -49,7 +49,7 @@ export function Matches() {
     } catch (error) {
       console.error('Failed to search jobs', error);
       alert('Failed to search jobs. Please try again later.');
-      setJobs(mockMatches); // Fallback to mock data on error for demo purposes
+      setJobs([]); // Clear on error
     } finally {
       setIsLoading(false);
     }
