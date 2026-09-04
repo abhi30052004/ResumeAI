@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+motor
+passlib[bcrypt]
+python-jose[cryptography]
+pydantic
+pydantic-settings
+openai
+python-multipart
+pdfplumber
+python-docx
+email-validator
+apify-client
