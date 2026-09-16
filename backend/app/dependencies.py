@@ -32,7 +32,28 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         id=str(user["_id"]),
         email=user["email"],
         full_name=user["full_name"],
+        employee_id=user.get("employee_id"),
+        photo_url=user.get("photo_url"),
+        role=user.get("role", "employee"),
+        status=user.get("status", "active"),
+        account_status=user.get("account_status", "approved"),
         target_role=user.get("target_role"),
         experience_level=user.get("experience_level"),
         skills=user.get("skills", [])
     )
+
+async def require_admin(current_user: UserResponse = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough privileges"
+        )
+    return current_user
+
+async def require_manager(current_user: UserResponse = Depends(get_current_user)):
+    if current_user.role not in ["admin", "manager"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough privileges"
+        )
+    return current_user

@@ -1,4 +1,4 @@
-#!C:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\New App\backend\.abhi\Scripts\python.exe
+#!C:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\backend\.abhi\Scripts\python.exe
 """A command line tool for extracting text and images from PDF and
 output it to plain text, html, xml or tags.
 """

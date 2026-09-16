@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Spinner } from '../components/ui/Spinner';
-import { FileText, ChevronRight } from 'lucide-react';
+import { FileText, ChevronRight, TrendingUp, Target, Activity } from 'lucide-react';
 import api from '../lib/api';
 
 export function History() {
@@ -24,72 +24,88 @@ export function History() {
   }, []);
 
   return (
-    <div className="flex-1 bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Analysis History</h1>
-          <p className="text-gray-600 mt-1">Review your past resume analyses and improvements.</p>
+    <div className="flex-1 bg-dash-bg py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto space-y-8">
+        
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Analysis History</h1>
+          <p className="text-gray-500 mt-2 text-lg">Review your past resume analyses and track improvements over time.</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        {/* History Table */}
+        <div className="bg-white rounded-3xl border border-dash-border shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-dash-border flex items-center gap-2">
+            <Activity className="w-5 h-5 text-[#635BFF]" />
+            <h3 className="font-bold text-gray-900 text-lg">Past Analyses</h3>
+          </div>
+
           {loading ? (
-            <div className="flex justify-center p-12"><Spinner className="w-8 h-8" /></div>
+            <div className="flex justify-center p-16">
+              <Spinner className="w-8 h-8 text-[#635BFF]" />
+            </div>
           ) : history.length === 0 ? (
-            <div className="text-center p-12">
+            <div className="text-center p-16">
               <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="w-8 h-8 text-gray-400" />
               </div>
-              <h4 className="text-lg font-medium text-gray-900 mb-1">No analysis history</h4>
-              <p className="text-gray-500 mb-4">Analyze a resume to see it here.</p>
+              <h4 className="text-lg font-bold text-gray-900 mb-2">No analysis history</h4>
+              <p className="text-gray-500">Analyze a resume to see your history and track progress here.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-500 uppercase bg-gray-50">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-50/50 border-b border-dash-border text-gray-500 font-semibold">
                   <tr>
-                    <th className="px-6 py-4 font-medium">Date</th>
-                    <th className="px-6 py-4 font-medium">ATS Score</th>
-                    <th className="px-6 py-4 font-medium">Job Match</th>
-                    <th className="px-6 py-4 font-medium">Missing Keywords</th>
-                    <th className="px-6 py-4 font-medium text-right">View</th>
+                    <th className="px-6 py-4">Date</th>
+                    <th className="px-6 py-4">ATS Score</th>
+                    <th className="px-6 py-4">Job Match</th>
+                    <th className="px-6 py-4">Missing Keywords</th>
+                    <th className="px-6 py-4 text-right">View</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-100">
                   {history.map((item) => (
-                    <tr 
-                      key={item.id} 
-                      className="hover:bg-gray-50 cursor-pointer transition-colors"
+                    <tr
+                      key={item.id}
+                      className="hover:bg-gray-50/80 transition-colors cursor-pointer group"
                       onClick={() => navigate(`/dashboard/analysis/${item.id}`)}
                     >
-                      <td className="px-6 py-4 text-gray-600">
+                      <td className="px-6 py-4 text-gray-600 font-medium">
                         {new Date(item.created_at).toLocaleString()}
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`font-bold ${item.ats_score >= 80 ? 'text-emerald-600' : item.ats_score >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                          {item.ats_score}%
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <Target className="w-4 h-4 text-gray-400" />
+                          <span className={`font-bold ${item.ats_score >= 80 ? 'text-emerald-600' : item.ats_score >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
+                            {item.ats_score}%
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`font-bold ${item.job_match_score >= 80 ? 'text-emerald-600' : item.job_match_score >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                          {item.job_match_score}%
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-gray-400" />
+                          <span className={`font-bold ${item.job_match_score >= 80 ? 'text-emerald-600' : item.job_match_score >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
+                            {item.job_match_score}%
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex gap-1 flex-wrap max-w-[200px]">
+                        <div className="flex gap-1 flex-wrap max-w-[220px]">
                           {item.missing_keywords.slice(0, 3).map((kw: string, i: number) => (
-                            <span key={i} className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
+                            <span key={i} className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-lg border border-gray-200">
                               {kw}
                             </span>
                           ))}
                           {item.missing_keywords.length > 3 && (
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded">
+                            <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-lg border border-gray-200">
                               +{item.missing_keywords.length - 3} more
                             </span>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <ChevronRight className="w-5 h-5 text-gray-400 inline" />
+                        <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#635BFF] transition-colors inline" />
                       </td>
                     </tr>
                   ))}
@@ -98,6 +114,7 @@ export function History() {
             </div>
           )}
         </div>
+
       </div>
     </div>
   );

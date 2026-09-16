@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel
 
 from ..database import get_database
-from ..models.user import UserCreate, UserResponse, Token
+from ..models.user import UserRegister, UserResponse, Token
 from ..utils.auth import get_password_hash, verify_password, create_access_token
 from ..config import settings
 from ..dependencies import get_current_user
@@ -17,7 +17,7 @@ class LoginRequest(BaseModel):
     password: str
 
 @router.post("/register", response_model=UserResponse)
-async def register(user: UserCreate):
+async def register(user: UserRegister):
     db = get_database()
     
     # Check if user exists
@@ -28,13 +28,22 @@ async def register(user: UserCreate):
             detail="Email already registered"
         )
         
+    # Determine account status based on role
+    # Managers require admin approval to log in
+    account_status = "pending" if user.role == "manager" else "approved"
+        
     # Create new user
     hashed_password = get_password_hash(user.password)
     user_dict = {
         "email": user.email,
         "full_name": user.full_name,
+        "employee_id": user.employee_id,
+        "photo_url": user.photo_url,
         "hashed_password": hashed_password,
         "created_at": datetime.now(timezone.utc),
+        "role": user.role,
+        "status": "active",
+        "account_status": account_status,
         "target_role": None,
         "experience_level": None,
         "skills": []
@@ -45,7 +54,12 @@ async def register(user: UserCreate):
     return UserResponse(
         id=str(result.inserted_id),
         email=user.email,
-        full_name=user.full_name
+        full_name=user.full_name,
+        employee_id=user.employee_id,
+        photo_url=user.photo_url,
+        role=user.role,
+        status="active",
+        account_status=account_status
     )
 
 @router.post("/login", response_model=Token)
@@ -58,6 +72,18 @@ async def login(login_data: LoginRequest):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+    if user.get("account_status") == "pending":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account pending approval by administrator"
+        )
+        
+    if user.get("status") == "inactive":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account is inactive"
         )
         
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)

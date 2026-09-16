@@ -1,17 +1,40 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
+from enum import Enum
+
+class RoleEnum(str, Enum):
+    admin = "admin"
+    manager = "manager"
+    employee = "employee"
+
+class AccountStatusEnum(str, Enum):
+    pending = "pending"
+    approved = "approved"
+    rejected = "rejected"
+
+class UserStatusEnum(str, Enum):
+    active = "active"
+    inactive = "inactive"
 
 class UserBase(BaseModel):
     email: EmailStr
     full_name: str
+    employee_id: Optional[str] = None
+    photo_url: Optional[str] = None
 
 class UserCreate(UserBase):
     password: str
 
+class UserRegister(UserCreate):
+    role: RoleEnum = RoleEnum.employee
+
 class UserInDB(UserBase):
     id: str = Field(alias="_id")
     hashed_password: str
+    role: str = "employee"
+    status: UserStatusEnum = UserStatusEnum.active
+    account_status: AccountStatusEnum = AccountStatusEnum.approved
     target_role: Optional[str] = None
     experience_level: Optional[str] = None
     skills: Optional[list[str]] = []
@@ -19,9 +42,19 @@ class UserInDB(UserBase):
     
 class UserResponse(UserBase):
     id: str
+    role: str
+    status: str
+    account_status: str
     target_role: Optional[str] = None
     experience_level: Optional[str] = None
     skills: Optional[list[str]] = []
+
+class UserUpdateRole(BaseModel):
+    role: RoleEnum
+
+class UserUpdateStatus(BaseModel):
+    status: Optional[UserStatusEnum] = None
+    account_status: Optional[AccountStatusEnum] = None
 
 class Token(BaseModel):
     access_token: str

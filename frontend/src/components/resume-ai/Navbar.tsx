@@ -42,7 +42,7 @@ export function Navbar() {
           <div className="w-8 h-8 rounded-full bg-[#635BFF] flex items-center justify-center">
             <div className="w-3 h-3 bg-white rounded-sm" />
           </div>
-          <span className="text-[#111111] font-bold tracking-tight text-lg">Resume AI</span>
+          <span className="text-[#111111] font-bold tracking-tight text-lg">PROFILEIQ</span>
         </Link>
 
         {/* Desktop Nav */}

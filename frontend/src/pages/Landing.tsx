@@ -10,6 +10,11 @@ import { AIAnalysis } from '../sections/resume-ai/AIAnalysis';
 import { ResumeTransformation } from '../sections/resume-ai/ResumeTransformation';
 import { JobMatching } from '../sections/resume-ai/JobMatching';
 import { FeaturesBento } from '../sections/resume-ai/FeaturesBento';
+import { ProfileEvolves } from '../sections/resume-ai/ProfileEvolves';
+import { RecruitersView } from '../sections/resume-ai/RecruitersView';
+import { CareerData } from '../sections/resume-ai/CareerData';
+import { CareerFlow } from '../sections/resume-ai/CareerFlow';
+import { Privacy } from '../sections/resume-ai/Privacy';
 import { Pricing } from '../sections/resume-ai/Pricing';
 import { CTA } from '../sections/resume-ai/CTA';
 
@@ -35,6 +40,14 @@ export function Landing() {
         
         {/* Supporting Content */}
         <FeaturesBento />
+        
+        {/* ProfileIQ Expanded Content */}
+        <ProfileEvolves />
+        <RecruitersView />
+        <CareerData />
+        <CareerFlow />
+        <Privacy />
+
         <Pricing />
         
         {/* Conclusion */}

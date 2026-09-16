@@ -12,19 +12,41 @@ import {
   HelpCircle,
   ChevronLeft,
   ChevronRight,
-  LogOut
+  LogOut,
+  Users,
+  ShieldAlert,
+  Building,
+  FolderKanban,
+  MessageSquare
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth } from '../../context/AuthContext';
 
-const navItems = [
+const adminNavItems = [
+  { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/admin/employees', label: 'Employees', icon: Users },
+  { path: '/admin/managers', label: 'Managers', icon: ShieldAlert },
+  { path: '/admin/clients', label: 'Clients', icon: Building },
+  { path: '/admin/projects', label: 'Projects', icon: FolderKanban },
+];
+
+const managerNavItems = [
+  { path: '/manager', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/manager/team', label: 'My Team', icon: Users },
+  { path: '/manager/projects', label: 'Projects', icon: FolderKanban },
+  { path: '/manager/jds', label: 'Job Descriptions', icon: FileText },
+  { path: '/manager/applications', label: 'Applications', icon: Briefcase },
+  { path: '/manager/messages', label: 'Messages', icon: MessageSquare },
+];
+
+const employeeNavItems = [
   { path: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { path: '/dashboard/resume', label: 'My Resume', icon: FileText },
-  { path: '/dashboard/analysis', label: 'AI Analysis', icon: Sparkles },
-  { path: '/dashboard/matches', label: 'Job Matches', icon: Search },
-  { path: '/dashboard/applications', label: 'Applications', icon: Briefcase },
-  { path: '/dashboard/insights', label: 'Career Insights', icon: TrendingUp },
+  { path: '/dashboard/opportunities', label: 'Opportunities', icon: Search },
+  { path: '/dashboard/applications', label: 'My Applications', icon: Briefcase },
+  { path: '/dashboard/projects', label: 'My Projects', icon: FolderKanban },
+  { path: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
 ];
 
 const bottomNavItems = [
@@ -38,6 +60,10 @@ export function Sidebar() {
   const { logout, user } = useAuth();
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
+
+  let navItems = employeeNavItems;
+  if (user?.role === 'admin') navItems = adminNavItems;
+  if (user?.role === 'manager') navItems = managerNavItems;
 
   return (
     <motion.aside
@@ -56,20 +82,20 @@ export function Sidebar() {
               exit={{ opacity: 0, x: -10 }}
               className="flex items-center gap-2 overflow-hidden whitespace-nowrap"
             >
-              <div className="w-8 h-8 rounded-lg bg-dash-accent text-white flex items-center justify-center font-bold">
-                R
+              <div className="w-8 h-8 rounded-lg bg-[#635BFF] text-white flex items-center justify-center font-bold">
+                T
               </div>
-              <span className="font-semibold text-dash-text-primary text-lg tracking-tight">Resume AI</span>
+              <span className="font-semibold text-dash-text-primary text-lg tracking-tight">AI Talent</span>
             </motion.div>
           )}
         </AnimatePresence>
         
         {collapsed && (
-          <div className="w-full flex justify-center">
-            <div className="w-8 h-8 rounded-lg bg-dash-accent text-white flex items-center justify-center font-bold">
-              R
+            <div className="w-full flex justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#635BFF] text-white flex items-center justify-center font-bold">
+                T
+              </div>
             </div>
-          </div>
         )}
       </div>
 
@@ -84,34 +110,38 @@ export function Sidebar() {
       {/* Main Nav */}
       <div className="flex-1 overflow-y-auto py-6 px-3 flex flex-col gap-1">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path || (location.pathname === '/dashboard' && item.path === '/dashboard');
+          // For the root dashboard/manager/admin paths, do exact match. For sub-pages, use startsWith
+          const isActive = item.path === '/dashboard' || item.path === '/admin' || item.path === '/manager'
+            ? location.pathname === item.path
+            : location.pathname.startsWith(item.path);
           return (
             <NavLink
               key={item.path}
               to={item.path}
-              className={({ isActive: routerIsActive }) => twMerge(
+              end={item.path === '/dashboard' || item.path === '/admin' || item.path === '/manager'}
+              className={twMerge(
                 clsx(
                   "relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group overflow-hidden whitespace-nowrap",
-                  (item.path === '/dashboard' ? location.pathname === '/dashboard' : routerIsActive) ? "text-dash-accent font-medium" : "text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-secondary/50",
+                  isActive ? "text-dash-accent font-medium" : "text-dash-text-secondary hover:text-dash-text-primary hover:bg-dash-secondary/50",
                   collapsed && "justify-center px-0"
                 )
               )}
             >
-              {(item.path === '/dashboard' ? location.pathname === '/dashboard' : location.pathname === item.path) && (
+              {isActive && (
                 <motion.div
                   layoutId="activeTab"
                   className="absolute inset-0 bg-dash-accent/10 rounded-xl"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
-              {(item.path === '/dashboard' ? location.pathname === '/dashboard' : location.pathname === item.path) && (
+              {isActive && (
                 <motion.div 
                   layoutId="activeIndicator"
                   className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-dash-accent rounded-r-full"
                 />
               )}
               
-              <item.icon size={20} className={clsx("shrink-0 relative z-10", (item.path === '/dashboard' ? location.pathname === '/dashboard' : location.pathname === item.path) && "text-dash-accent")} />
+              <item.icon size={20} className={clsx("shrink-0 relative z-10", isActive && "text-dash-accent")} />
               
               <AnimatePresence mode="popLayout">
                 {!collapsed && (
@@ -164,7 +194,7 @@ export function Sidebar() {
         <div className={clsx("mt-4 flex flex-col gap-2 border-t border-dash-border pt-4", collapsed && "items-center")}>
           <div className={clsx("flex items-center gap-3 px-2 py-2 overflow-hidden whitespace-nowrap", collapsed && "justify-center px-0")}>
             <img 
-              src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user?.username || 'User'}&backgroundColor=F0F0EA`} 
+              src={user?.photo_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${user?.full_name || 'User'}&backgroundColor=F0F0EA`} 
               alt="Profile" 
               className="w-9 h-9 rounded-full bg-dash-secondary border border-dash-border shrink-0"
             />
@@ -176,8 +206,8 @@ export function Sidebar() {
                   exit={{ opacity: 0, x: -10 }}
                   className="flex flex-col"
                 >
-                  <span className="text-sm font-medium text-dash-text-primary">{user?.username || 'Abhijit B.'}</span>
-                  <span className="text-xs text-dash-text-secondary">Pro Plan</span>
+                  <span className="text-sm font-medium text-dash-text-primary">{user?.full_name || 'User'}</span>
+                  <span className="text-xs text-dash-text-secondary capitalize">{user?.role || 'Employee'}</span>
                 </motion.div>
               )}
             </AnimatePresence>

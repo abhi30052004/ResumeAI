@@ -1,4 +1,4 @@
-#!C:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\New App\backend\.abhi\Scripts\python.exe
+#!C:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\backend\.abhi\Scripts\python.exe
 """Extract pdf structure in XML format"""
 
 import logging

@@ -6,6 +6,11 @@ interface User {
   email: string;
   full_name: string;
   username?: string;
+  employee_id?: string;
+  photo_url?: string;
+  role: 'admin' | 'manager' | 'employee';
+  status: 'active' | 'inactive';
+  account_status: 'pending' | 'approved' | 'rejected';
   target_role?: string;
   experience_level?: string;
 }

@@ -1,12 +1,13 @@
 import React from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { Sparkles, Bot, LineChart, Target, Zap } from 'lucide-react';
 
 function FeatureCard({ children, className, innerClassName }: { children: React.ReactNode, className?: string, innerClassName?: string }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-  
+
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["2deg", "-2deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-2deg", "2deg"]);
 
@@ -23,10 +24,10 @@ function FeatureCard({ children, className, innerClassName }: { children: React.
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       className={`perspective-[1000px] h-full w-full relative z-10 hover:z-50 ${className || ''}`}
     >
-      <div 
-        className={`w-full h-full bg-white rounded-3xl border border-[#E5E5DE] shadow-sm p-8 group relative overflow-hidden flex flex-col justify-between hover:border-[#635BFF]/50 transition-colors ${innerClassName || ''}`}
+      <div
+        className={`w-full h-full bg-slate-50/70 backdrop-blur-2xl rounded-3xl border border-white shadow-[0_10px_30px_rgba(0,0,0,0.04)] p-8 group relative overflow-hidden flex flex-col justify-between hover:border-[#635BFF]/30 hover:shadow-[0_20px_50px_rgba(99,91,255,0.1)] transition-all duration-300 ${innerClassName || ''}`}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F7F7F2]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <div className="relative z-10 w-full h-full flex flex-col justify-between transform-gpu transition-transform duration-500 group-hover:translate-z-4">
           {children}
         </div>
@@ -36,37 +37,85 @@ function FeatureCard({ children, className, innerClassName }: { children: React.
 }
 
 export function FeaturesBento() {
+  // Background blobs animation
+  const blobAnimation = {
+    x: [0, -40, 0, 40, 0],
+    y: [0, 50, 0, -50, 0],
+    scale: [1, 1.1, 0.9, 1.05, 1],
+    transition: { duration: 25, repeat: Infinity, ease: "linear" }
+  };
+
   return (
-    <section className="py-32 bg-[#F7F7F2] px-6 lg:px-12">
-      <div className="max-w-[100rem] mx-auto">
-        <h2 className="text-xs font-mono uppercase tracking-[0.3em] text-[#666666] mb-12">Intelligence Suite</h2>
-        
+    <section className="py-32 bg-white relative overflow-hidden px-6 lg:px-12 text-slate-900">
+      {/* Dynamic Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <motion.div
+          animate={blobAnimation}
+          className="absolute top-[20%] left-[10%] w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-[#635BFF]/10 to-[#A07CFF]/10 blur-[120px] mix-blend-multiply opacity-50"
+        />
+        <motion.div
+          animate={{ ...blobAnimation, transition: { duration: 20, repeat: Infinity, ease: "linear" } }}
+          className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] rounded-full bg-gradient-to-bl from-[#FF3366]/5 to-[#FF8A8A]/5 blur-[120px] mix-blend-multiply opacity-50"
+        />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLDAsMCwwLjAyKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50" />
+      </div>
+
+      <div className="max-w-[100rem] mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter text-slate-900 mb-6 drop-shadow-sm">
+            YOUR AI CAREER <span className="text-[#635BFF]">INTELLIGENCE SUITE</span>
+          </h2>
+          <p className="text-lg text-slate-600 max-w-xl">
+            Everything you need to understand, improve, and optimize your professional profile.
+          </p>
+        </motion.div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 auto-rows-[minmax(300px,auto)]">
-          
+
           {/* Card 1: Resume Analysis */}
           <div className="md:col-span-2 lg:col-span-8">
-            <FeatureCard>
+            <FeatureCard innerClassName="!bg-gradient-to-br !from-white !to-slate-50/50">
               <div className="flex justify-between items-start">
-                <h3 className="text-3xl font-bold text-[#111111] uppercase max-w-[200px]">AI Resume Analysis</h3>
-                <div className="w-16 h-16 relative flex items-center justify-center">
+                <div>
+                  <LineChart className="w-8 h-8 text-[#635BFF] mb-4" />
+                  <h3 className="text-4xl font-bold text-slate-900 uppercase max-w-[300px] leading-none drop-shadow-sm">AI Resume Analysis</h3>
+                </div>
+                <div className="w-20 h-20 relative flex items-center justify-center">
                   <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 64 64">
-                    <circle cx="32" cy="32" r="28" stroke="#F0F0EA" strokeWidth="4" fill="none" />
-                    <circle cx="32" cy="32" r="28" stroke="#635BFF" strokeWidth="4" fill="none" strokeDasharray="175" strokeDashoffset="20" strokeLinecap="round" />
+                    <circle cx="32" cy="32" r="28" stroke="#F1F5F9" strokeWidth="6" fill="none" />
+                    <circle cx="32" cy="32" r="28" stroke="url(#gradient)" strokeWidth="6" fill="none" strokeDasharray="175" strokeDashoffset="20" strokeLinecap="round" />
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#635BFF" />
+                        <stop offset="100%" stopColor="#FF3366" />
+                      </linearGradient>
+                    </defs>
                   </svg>
-                  <span className="font-bold text-[#111111] z-10">94</span>
+                  <span className="font-bold text-2xl text-slate-900 z-10">94</span>
                 </div>
               </div>
-              <p className="text-[#666666] max-w-sm mt-auto">Deep structural analysis of your experience, measuring ATS compatibility and content impact.</p>
+              <div className="mt-auto space-y-2">
+                <p className="text-slate-900 font-bold text-lg">AI PROFILE ANALYSIS</p>
+                <p className="text-slate-600 max-w-md text-base leading-relaxed">Get a detailed analysis of your resume and professional profile. Identify strengths, weaknesses, missing information, ATS issues, and improvement opportunities.</p>
+              </div>
             </FeatureCard>
           </div>
 
           {/* Card 2: Job Match */}
           <div className="md:col-span-1 lg:col-span-4">
             <FeatureCard>
-              <div className="w-12 h-12 rounded-2xl bg-[#F0F0EA] text-[#635BFF] flex items-center justify-center font-bold text-xl mb-auto">94%</div>
+              <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 shadow-sm text-[#635BFF] flex items-center justify-center font-bold text-2xl mb-auto">94<span className="text-sm">%</span></div>
               <div>
-                <h3 className="text-xl font-bold text-[#111111] uppercase mb-2 mt-8">Job Match</h3>
-                <p className="text-sm text-[#666666]">Instantly score your resume against any job description.</p>
+                <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 mt-8 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-[#635BFF]" />
+                  Job Match
+                </h3>
+                <p className="text-slate-500 text-sm leading-relaxed">Compare your profile against job descriptions and understand your compatibility before applying.</p>
               </div>
             </FeatureCard>
           </div>
@@ -74,13 +123,21 @@ export function FeaturesBento() {
           {/* Card 3: AI Rewrite */}
           <div className="md:col-span-1 lg:col-span-4">
             <FeatureCard>
-              <div className="flex gap-2 mb-auto">
-                <div className="h-2 w-16 bg-[#E5E5DE] rounded" />
-                <div className="h-2 w-full bg-[#635BFF]/20 rounded" />
+              <div className="flex gap-2 mb-auto flex-col space-y-3 w-full">
+                <div className="h-3 w-24 bg-slate-200 rounded-full" />
+                <div className="h-3 w-full bg-gradient-to-r from-[#635BFF]/30 to-[#FF3366]/30 rounded-full overflow-hidden relative">
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  />
+                </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-[#111111] uppercase mb-2 mt-8">AI Rewrite</h3>
-                <p className="text-sm text-[#666666]">Transform weak bullets into metric-driven achievements.</p>
+                <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 mt-8 flex items-center gap-2">
+                  AI Rewrite
+                </h3>
+                <p className="text-slate-500 text-sm leading-relaxed">Rewrite weak bullet points, summaries, skills descriptions, and experience sections with clearer and more impactful language.</p>
               </div>
             </FeatureCard>
           </div>
@@ -88,26 +145,28 @@ export function FeaturesBento() {
           {/* Card 4: Career Intel */}
           <div className="md:col-span-1 lg:col-span-4">
             <FeatureCard>
-              <h3 className="text-3xl font-bold text-[#111111] uppercase mb-2">Career<br/>Intelligence</h3>
-              <div className="flex gap-2 mt-auto">
-                {['React', 'TypeScript', 'Node.js'].map(k => (
-                  <span key={k} className="px-3 py-1 rounded-md bg-[#F0F0EA] text-[#111111] text-xs font-bold">{k}</span>
-                ))}
-              </div>
+              <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 leading-none">Career<br /><span className="text-[#635BFF]">Intelligence</span></h3>
+              <p className="text-slate-500 text-sm mt-4 mb-4 leading-relaxed tracking-tight">Discover your strongest skills, potential career directions, skill gaps, and areas worth developing.</p>
             </FeatureCard>
           </div>
 
           {/* Card 5: AI Chat */}
           <div className="md:col-span-1 lg:col-span-4">
-            <FeatureCard innerClassName="!bg-[#111111] !border-none">
-              <div className="text-white text-center flex flex-col items-center justify-center h-full">
-                <div className="w-12 h-12 rounded-full bg-[#635BFF] flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(99,91,255,0.4)]">
-                  <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                  </svg>
+            <FeatureCard innerClassName="!bg-slate-900 !border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
+              <div className="text-white text-center flex flex-col items-center justify-center h-full relative z-10">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#635BFF] to-[#A07CFF] flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(99,91,255,0.4)] relative">
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-white/20"
+                    animate={{ scale: [1, 1.2, 1], opacity: [1, 0, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <Bot className="w-8 h-8 text-white relative z-10" />
                 </div>
-                <span className="font-bold uppercase tracking-widest text-xs">AI Chat</span>
+                <span className="font-bold uppercase tracking-[0.2em] text-sm text-slate-200">AI Career Assistant</span>
+                <p className="text-slate-400 text-sm mt-3 max-w-[200px] text-center">Ask questions about your resume, career profile, job descriptions, interviews, skills, and applications. Your AI assistant understands your professional context.</p>
               </div>
+              {/* Dark mode card ambient glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#635BFF]/20 blur-[50px] rounded-full pointer-events-none" />
             </FeatureCard>
           </div>
 
