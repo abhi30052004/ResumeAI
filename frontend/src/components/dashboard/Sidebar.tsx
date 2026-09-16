@@ -17,7 +17,8 @@ import {
   ShieldAlert,
   Building,
   FolderKanban,
-  MessageSquare
+  MessageSquare,
+  Bot
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -50,6 +51,7 @@ const employeeNavItems = [
 ];
 
 const bottomNavItems = [
+  { path: '/dashboard/assistant', label: 'AI Assistant', icon: Bot },
   { path: '/dashboard/settings', label: 'Settings', icon: Settings },
   { path: '/dashboard/help', label: 'Help & Support', icon: HelpCircle },
 ];

@@ -2,23 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Search, FolderKanban, Plus, Filter, Users, Calendar, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/api';
+import { ProjectModal } from '../components/admin/ProjectModal';
 
 export function AdminProjects() {
   const [searchQuery, setSearchQuery] = useState('');
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await api.get('/api/projects/all');
+      setProjects(response.data);
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await api.get('/api/projects/all');
-        setProjects(response.data);
-      } catch (error) {
-        console.error('Failed to fetch projects:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchProjects();
   }, []);
 
@@ -40,7 +44,7 @@ export function AdminProjects() {
           
           <Button 
             className="bg-[#635BFF] hover:bg-[#5046e5] text-white gap-2"
-            onClick={() => alert("Project creation is restricted to Team Managers.")}
+            onClick={() => { setSelectedProject(null); setIsModalOpen(true); }}
           >
             <Plus className="w-4 h-4" /> Create Project
           </Button>
@@ -149,6 +153,15 @@ export function AdminProjects() {
         </div>
 
       </div>
+      
+      {isModalOpen && (
+        <ProjectModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={fetchProjects}
+          project={selectedProject}
+        />
+      )}
     </div>
   );
 }

@@ -18,7 +18,7 @@ export function CTA() {
 
   return (
     <div className="relative bg-slate-900">
-      {/* Wave Separator from previous section (Pricing has #F8FAFC bg) */}
+      {/* Wave Separator from previous section */}
       <svg className="absolute w-full h-auto -top-[1px] left-0 pointer-events-none z-10" viewBox="0 0 1440 120" preserveAspectRatio="none">
         <path className="fill-[#F8FAFC]" d="M0,120 C480,0 960,0 1440,120 L1440,0 L0,0 Z" />
       </svg>
@@ -44,11 +44,10 @@ export function CTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="text-[8vw] lg:text-[6vw] font-bold tracking-tighter text-white leading-[0.85] drop-shadow-2xl uppercase"
+            className="text-[6vw] lg:text-[5vw] font-bold tracking-tighter text-white leading-[0.85] drop-shadow-2xl uppercase"
           >
-            YOUR PROFILE IS<br />
-            <span className="italic font-serif font-light text-transparent bg-clip-text bg-gradient-to-r from-[#635BFF] to-[#FF3366]">MORE THAN A</span><br />
-            RESUME.
+            TURN EMPLOYEE DATA INTO<br />
+            <span className="italic font-serif font-light text-transparent bg-clip-text bg-gradient-to-r from-[#635BFF] to-[#FF3366]">PROJECT</span> INTELLIGENCE.
           </motion.h2>
 
           <motion.div
@@ -58,9 +57,9 @@ export function CTA() {
             transition={{ duration: 1, delay: 0.3 }}
             className="text-xl text-slate-300 font-light max-w-lg mb-4 space-y-4"
           >
-            <p className="font-bold text-white text-2xl">It's your experience. Your skills. Your achievements. Your potential.</p>
-            <p>ProfileIQ helps you understand it, improve it, and present it with confidence.</p>
-            <p className="text-[#A07CFF] font-bold uppercase tracking-widest text-sm pt-4">Turn your professional profile into your next opportunity.</p>
+            <p className="font-bold text-white text-2xl">Understand your people. Discover your talent.</p>
+            <p>Match skills to opportunities and build stronger project teams.</p>
+            <p className="text-[#A07CFF] font-bold uppercase tracking-widest text-sm pt-4">Intelligent Professional Profile</p>
           </motion.div>
 
           <motion.div
@@ -71,10 +70,10 @@ export function CTA() {
             className="flex flex-col items-center gap-6"
           >
             <button
-              onClick={() => navigate(user ? '/analyze' : '/register')}
+              onClick={() => navigate(user ? '/dashboard' : '/register')}
               className="bg-gradient-to-r from-[#635BFF] to-[#A07CFF] text-white font-bold px-12 py-6 rounded-full hover:scale-105 transition-all duration-300 border-none group text-xl shadow-[0_20px_50px_rgba(99,91,255,0.4)] hover:shadow-[0_20px_60px_rgba(99,91,255,0.6)] flex items-center cursor-pointer"
             >
-              Analyze My Profile <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
+              Explore ProfileIQ <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
             </button>
           </motion.div>
 
@@ -92,29 +91,29 @@ export function CTA() {
               <span className="font-bold text-white tracking-wider uppercase">PROFILEIQ</span>
             </div>
             <p className="text-white font-bold mb-2">Intelligent Professional Profile</p>
-            <p>Understand your profile.</p>
-            <p>Improve your skills.</p>
-            <p>Find better opportunities.</p>
+            <p>Understand your people.</p>
+            <p>Discover your talent.</p>
+            <p>Match skills to opportunities.</p>
           </div>
           <div className="flex flex-col gap-4">
-            <span className="text-white font-bold mb-2">Product</span>
-            <a href="#" className="hover:text-white transition-colors">Profile Analysis</a>
-            <a href="#" className="hover:text-white transition-colors">Job Matching</a>
-            <a href="#" className="hover:text-white transition-colors">AI Rewrite</a>
-            <a href="#" className="hover:text-white transition-colors">Career Intelligence</a>
-            <a href="#" className="hover:text-white transition-colors">AI Assistant</a>
+            <span className="text-white font-bold mb-2">Platform</span>
+            <a href="#" className="hover:text-white transition-colors">AI Profile Intelligence</a>
+            <a href="#" className="hover:text-white transition-colors">Smart Resource Matching</a>
+            <a href="#" className="hover:text-white transition-colors">Project Experience</a>
+            <a href="#" className="hover:text-white transition-colors">Skill Intelligence</a>
+            <a href="#" className="hover:text-white transition-colors">AI Career Assistant</a>
           </div>
           <div className="flex flex-col gap-4">
-            <span className="text-white font-bold mb-2">Resources</span>
-            <a href="#" className="hover:text-white transition-colors">Career Guide</a>
-            <a href="#" className="hover:text-white transition-colors">Resume Tips</a>
-            <a href="#" className="hover:text-white transition-colors">Interview Preparation</a>
-            <a href="#" className="hover:text-white transition-colors">Skill Development</a>
+            <span className="text-white font-bold mb-2">Solutions</span>
+            <a href="#" className="hover:text-white transition-colors">For Employees</a>
+            <a href="#" className="hover:text-white transition-colors">For Managers</a>
+            <a href="#" className="hover:text-white transition-colors">For Leadership</a>
+            <a href="#" className="hover:text-white transition-colors">Talent Acquisition</a>
           </div>
           <div className="flex flex-col gap-4">
             <span className="text-white font-bold mb-2">Company</span>
             <a href="#" className="hover:text-white transition-colors">About</a>
-            <a href="#" className="hover:text-white transition-colors">Pricing</a>
+            <a href="#" className="hover:text-white transition-colors">Contact</a>
             <a href="#" className="hover:text-white transition-colors">Privacy</a>
             <a href="#" className="hover:text-white transition-colors">Terms</a>
           </div>

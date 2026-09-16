@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Search, Send, Phone, Video, MoreVertical, Image as ImageIcon, Paperclip, Smile, Plus, Wifi, WifiOff } from 'lucide-react';
+import { Search, Send, Phone, Video, MoreVertical, Image as ImageIcon, Paperclip, Smile, Plus, Wifi, WifiOff, PhoneOff, PhoneCall } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useChat, Conversation, ChatMessage } from '../context/ChatContext';
 import { useAuth } from '../context/AuthContext';
@@ -11,13 +11,15 @@ export function Messages() {
     conversations, messages, typingUsers, onlineUsers,
     loadConversations, loadMessages,
     sendChatMessage, sendTyping,
-    startCall, wsConnected,
+    startCall, acceptCall, rejectCall, endCall,
+    activeCall, localStream, remoteStream, wsConnected,
   } = useChat();
 
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [inputText, setInputText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [allUsers, setAllUsers] = useState<{id: string, name: string, photo_url?: string}[]>([]);
   const typingTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -27,6 +29,7 @@ export function Messages() {
 
   useEffect(() => {
     loadConversations();
+    api.get('/api/users').then(res => setAllUsers(res.data)).catch(console.error);
   }, [loadConversations]);
 
   useEffect(() => {
@@ -73,18 +76,43 @@ export function Messages() {
     }
   };
 
+  const handleStartConversation = async (userId: string) => {
+    try {
+      const res = await api.post('/api/chat/conversations', { participant_id: userId });
+      await loadConversations();
+      setActiveConvId(res.data.id);
+      setSearchQuery('');
+    } catch (error) {
+      console.error('Failed to start conversation', error);
+    }
+  };
+
   const filteredConversations = conversations.filter(conv => {
     const other = conv.participants.find(p => p.id !== user?.id);
     return other?.name.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const existingParticipantIds = new Set(
+    conversations.flatMap(c => c.participants.map(p => p.id))
+  );
+
+  const filteredOtherUsers = searchQuery.trim() === '' ? [] : allUsers.filter(u => 
+    !existingParticipantIds.has(u.id) && 
+    u.id !== user?.id && 
+    u.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const formatTime = (ts: string) => {
     const d = new Date(ts);
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const handleActionClick = (action: string) => {
+    alert(`${action} feature will be available in the next update!`);
+  };
+
   return (
-    <div className="flex-1 bg-dash-bg p-4 sm:p-6 lg:p-8 h-[calc(100vh-64px)] flex flex-col">
+    <div className="flex-1 bg-dash-bg p-4 sm:p-6 lg:p-8 h-[calc(100vh-64px)] flex flex-col relative">
       <div className="max-w-6xl mx-auto w-full h-full flex flex-col">
         
         <div className="mb-4 flex items-center justify-between">
@@ -165,6 +193,37 @@ export function Messages() {
                   </div>
                 );
               })}
+
+              {filteredOtherUsers.length > 0 && (
+                <div className="mt-4">
+                  <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Other People
+                  </div>
+                  {filteredOtherUsers.map(u => {
+                    const isOnline = onlineUsers.has(u.id);
+                    return (
+                      <div 
+                        key={u.id} 
+                        onClick={() => handleStartConversation(u.id)}
+                        className="p-4 border-b border-gray-100 flex items-center gap-3 cursor-pointer transition-colors hover:bg-gray-50"
+                      >
+                        <div className="relative shrink-0">
+                          <img 
+                            src={u.photo_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${u.name}&backgroundColor=F0F0EA`} 
+                            alt={u.name} 
+                            className="w-10 h-10 rounded-full border border-gray-200 bg-white" 
+                          />
+                          {isOnline && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold text-gray-900 truncate">{u.name}</h4>
+                          <p className="text-xs text-gray-500 truncate">Start a conversation</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 
@@ -212,7 +271,7 @@ export function Messages() {
                   >
                     <Video className="w-5 h-5" />
                   </button>
-                  <button className="p-2 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                  <button onClick={() => handleActionClick('Options')} className="p-2 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                     <MoreVertical className="w-5 h-5" />
                   </button>
                 </div>
@@ -261,8 +320,8 @@ export function Messages() {
               <div className="p-4 border-t border-dash-border bg-white">
                 <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl p-2 focus-within:ring-2 focus-within:ring-[#635BFF]/20 focus-within:border-[#635BFF] transition-all">
                   <div className="flex gap-1 pb-1 px-1">
-                    <button className="text-gray-400 hover:text-gray-600 p-1.5"><ImageIcon className="w-5 h-5" /></button>
-                    <button className="text-gray-400 hover:text-gray-600 p-1.5"><Paperclip className="w-5 h-5" /></button>
+                    <button onClick={() => handleActionClick('Image Upload')} className="text-gray-400 hover:text-gray-600 p-1.5"><ImageIcon className="w-5 h-5" /></button>
+                    <button onClick={() => handleActionClick('File Attachment')} className="text-gray-400 hover:text-gray-600 p-1.5"><Paperclip className="w-5 h-5" /></button>
                   </div>
                   <textarea 
                     placeholder="Write a message..." 
@@ -273,7 +332,7 @@ export function Messages() {
                     onKeyDown={handleKeyDown}
                   />
                   <div className="flex gap-2 pb-1 pr-1">
-                    <button className="text-gray-400 hover:text-gray-600 p-1.5"><Smile className="w-5 h-5" /></button>
+                    <button onClick={() => handleActionClick('Emojis')} className="text-gray-400 hover:text-gray-600 p-1.5"><Smile className="w-5 h-5" /></button>
                     <Button 
                       onClick={handleSend}
                       disabled={!inputText.trim()}
@@ -297,6 +356,48 @@ export function Messages() {
             </div>
           )}
         </div>
+
+        {/* ── Active Call Overlay ── */}
+        {activeCall && (
+          <div className="absolute inset-0 bg-gray-900/95 z-50 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-3xl m-4 sm:m-6 lg:m-8">
+            <div className="text-center mb-8">
+              <img 
+                src={activeCall.remote_user.photo_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${activeCall.remote_user.name}&backgroundColor=F0F0EA`} 
+                className="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-gray-700 shadow-xl" 
+              />
+              <h2 className="text-3xl font-bold mb-2">{activeCall.remote_user.name}</h2>
+              <p className="text-gray-400 text-lg capitalize flex items-center justify-center gap-2">
+                {activeCall.status === 'active' ? (
+                  <span className="text-emerald-400 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Call in progress</span>
+                ) : (
+                  <span className="animate-pulse">{activeCall.status}...</span>
+                )}
+              </p>
+            </div>
+            
+            {activeCall.type === 'video' && activeCall.status === 'active' && (
+              <div className="flex gap-4 mb-8">
+                <video autoPlay playsInline muted ref={video => { if (video && localStream.current) video.srcObject = localStream.current }} className="w-48 h-36 bg-gray-800 rounded-2xl object-cover transform scale-x-[-1] shadow-lg border border-gray-700" />
+                <video autoPlay playsInline ref={video => { if (video && remoteStream) video.srcObject = remoteStream }} className="w-96 h-72 bg-gray-800 rounded-2xl object-cover shadow-lg border border-gray-700" />
+              </div>
+            )}
+
+            <div className="flex gap-6 mt-4">
+              {activeCall.status === 'ringing' && !activeCall.isCaller && (
+                <button onClick={acceptCall} className="bg-emerald-500 hover:bg-emerald-600 rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:scale-105 transition-all">
+                  <PhoneCall className="w-7 h-7" />
+                </button>
+              )}
+              <button 
+                onClick={activeCall.status === 'ringing' && !activeCall.isCaller ? rejectCall : endCall} 
+                className="bg-red-500 hover:bg-red-600 rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:scale-105 transition-all"
+              >
+                <PhoneOff className="w-7 h-7" />
+              </button>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

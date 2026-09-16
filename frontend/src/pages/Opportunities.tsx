@@ -99,12 +99,31 @@ export function Opportunities() {
 
                 <p className="text-gray-600 line-clamp-2">{opp.description}</p>
 
-                <div className="flex flex-wrap gap-2">
-                  {opp.skills && opp.skills.map((skill: string) => (
-                    <span key={skill} className="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-lg border border-gray-200">
-                      {skill}
-                    </span>
-                  ))}
+                <div className="flex flex-col gap-2 mt-4">
+                  {opp.matched_skills && opp.matched_skills.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100 flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" /> Matched Skills
+                      </span>
+                      {opp.matched_skills.map((skill: string) => (
+                        <span key={`matched-${skill}`} className="px-2.5 py-1 text-xs font-medium bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {opp.missing_skills && opp.missing_skills.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      <span className="text-xs font-semibold text-orange-700 bg-orange-50 px-2 py-1 rounded-lg border border-orange-100 flex items-center gap-1">
+                        Upskill Path
+                      </span>
+                      {opp.missing_skills.map((skill: string) => (
+                        <span key={`missing-${skill}`} className="px-2.5 py-1 text-xs font-medium bg-gray-50 text-gray-500 rounded-lg border border-gray-200">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -174,13 +193,35 @@ export function Opportunities() {
               </div>
 
               <div>
-                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">Required Skills</h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedOpp.skills && selectedOpp.skills.map((skill: string) => (
-                    <span key={skill} className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg border border-gray-200">
-                      {skill}
-                    </span>
-                  ))}
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">Required Skills Match</h3>
+                
+                <div className="flex flex-col gap-4">
+                  {selectedOpp.matched_skills && selectedOpp.matched_skills.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-emerald-600 mb-2 flex items-center gap-1"><Sparkles className="w-3.5 h-3.5" /> Your Matches</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedOpp.matched_skills.map((skill: string) => (
+                          <span key={skill} className="px-3 py-1 text-sm font-medium bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedOpp.missing_skills && selectedOpp.missing_skills.length > 0 && (
+                    <div className="p-4 bg-orange-50/50 rounded-xl border border-orange-100">
+                      <h4 className="text-xs font-semibold text-orange-600 mb-2">Upskill Path for this Role</h4>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {selectedOpp.missing_skills.map((skill: string) => (
+                          <span key={skill} className="px-3 py-1 text-sm font-medium bg-white text-gray-600 rounded-lg border border-gray-200">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-xs text-orange-700">Acquiring these skills will significantly improve your chances of being selected for this role.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

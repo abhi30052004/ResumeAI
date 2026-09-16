@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Sparkles, Bot, LineChart, Target, Zap } from 'lucide-react';
+import { Bot, LineChart, Target, Zap, FolderKanban, Network, Briefcase } from 'lucide-react';
 
 function FeatureCard({ children, className, innerClassName }: { children: React.ReactNode, className?: string, innerClassName?: string }) {
   const x = useMotionValue(0);
@@ -46,7 +46,7 @@ export function FeaturesBento() {
   };
 
   return (
-    <section className="py-32 bg-white relative overflow-hidden px-6 lg:px-12 text-slate-900">
+    <section id="features" className="py-32 bg-white relative overflow-hidden px-6 lg:px-12 text-slate-900">
       {/* Dynamic Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div
@@ -68,22 +68,23 @@ export function FeaturesBento() {
           className="mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter text-slate-900 mb-6 drop-shadow-sm">
-            YOUR AI CAREER <span className="text-[#635BFF]">INTELLIGENCE SUITE</span>
+            KNOW YOUR PEOPLE.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#635BFF] to-[#FF3366]">BUILD BETTER TEAMS.</span>
           </h2>
-          <p className="text-lg text-slate-600 max-w-xl">
-            Everything you need to understand, improve, and optimize your professional profile.
+          <p className="text-lg text-slate-600 max-w-2xl">
+            ProfileIQ brings employee profiles, project requirements, resource availability, and AI-powered matching into one connected platform.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 auto-rows-[minmax(300px,auto)]">
 
-          {/* Card 1: Resume Analysis */}
+          {/* Card 1: AI Profile Intelligence */}
           <div className="md:col-span-2 lg:col-span-8">
             <FeatureCard innerClassName="!bg-gradient-to-br !from-white !to-slate-50/50">
               <div className="flex justify-between items-start">
                 <div>
                   <LineChart className="w-8 h-8 text-[#635BFF] mb-4" />
-                  <h3 className="text-4xl font-bold text-slate-900 uppercase max-w-[300px] leading-none drop-shadow-sm">AI Resume Analysis</h3>
+                  <h3 className="text-4xl font-bold text-slate-900 uppercase max-w-[400px] leading-none drop-shadow-sm">AI PROFILE INTELLIGENCE</h3>
                 </div>
                 <div className="w-20 h-20 relative flex items-center justify-center">
                   <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 64 64">
@@ -100,60 +101,77 @@ export function FeaturesBento() {
                 </div>
               </div>
               <div className="mt-auto space-y-2">
-                <p className="text-slate-900 font-bold text-lg">AI PROFILE ANALYSIS</p>
-                <p className="text-slate-600 max-w-md text-base leading-relaxed">Get a detailed analysis of your resume and professional profile. Identify strengths, weaknesses, missing information, ATS issues, and improvement opportunities.</p>
+                <p className="text-slate-600 max-w-lg text-base leading-relaxed">
+                  Understand every employee's skills, experience, achievements, and project history in a structured, actionable format.
+                </p>
               </div>
             </FeatureCard>
           </div>
 
-          {/* Card 2: Job Match */}
+          {/* Card 2: Smart Resource Matching */}
           <div className="md:col-span-1 lg:col-span-4">
             <FeatureCard>
-              <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 shadow-sm text-[#635BFF] flex items-center justify-center font-bold text-2xl mb-auto">94<span className="text-sm">%</span></div>
+              <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 shadow-sm text-[#635BFF] flex items-center justify-center font-bold text-2xl mb-auto">
+                <Target className="w-6 h-6" />
+              </div>
               <div>
                 <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 mt-8 flex items-center gap-2">
-                  <Target className="w-5 h-5 text-[#635BFF]" />
-                  Job Match
+                  SMART MATCHING
                 </h3>
-                <p className="text-slate-500 text-sm leading-relaxed">Compare your profile against job descriptions and understand your compatibility before applying.</p>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Find available employees whose skills and experience strongly align with incoming project requirements.
+                </p>
               </div>
             </FeatureCard>
           </div>
 
-          {/* Card 3: AI Rewrite */}
+          {/* Card 3: Project Experience */}
           <div className="md:col-span-1 lg:col-span-4">
             <FeatureCard>
               <div className="flex gap-2 mb-auto flex-col space-y-3 w-full">
-                <div className="h-3 w-24 bg-slate-200 rounded-full" />
-                <div className="h-3 w-full bg-gradient-to-r from-[#635BFF]/30 to-[#FF3366]/30 rounded-full overflow-hidden relative">
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
-                    animate={{ x: ['-100%', '200%'] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" as any }}
-                  />
-                </div>
+                 <FolderKanban className="w-10 h-10 text-[#27C93F] mb-2" />
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 mt-8 flex items-center gap-2">
-                  AI Rewrite
+                  PROJECT EXPERIENCE
                 </h3>
-                <p className="text-slate-500 text-sm leading-relaxed">Rewrite weak bullet points, summaries, skills descriptions, and experience sections with clearer and more impactful language.</p>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Turn past project experience and historical assignments into actionable, queryable staffing intelligence.
+                </p>
               </div>
             </FeatureCard>
           </div>
 
-          {/* Card 4: Career Intel */}
+          {/* Card 4: Skill Intelligence */}
           <div className="md:col-span-1 lg:col-span-4">
             <FeatureCard>
-              <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 leading-none">Career<br /><span className="text-[#635BFF]">Intelligence</span></h3>
-              <p className="text-slate-500 text-sm mt-4 mb-4 leading-relaxed tracking-tight">Discover your strongest skills, potential career directions, skill gaps, and areas worth developing.</p>
+              <Network className="w-10 h-10 text-[#FFBD2E] mb-auto" />
+              <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 mt-8 leading-none">
+                SKILL <br /><span className="text-[#635BFF]">INTELLIGENCE</span>
+              </h3>
+              <p className="text-slate-500 text-sm mt-4 mb-4 leading-relaxed tracking-tight">
+                Identify strengths, spot skill gaps, and discover the specific technologies needed across the entire organization.
+              </p>
+            </FeatureCard>
+          </div>
+          
+          {/* Card 5: Internal Opportunities */}
+          <div className="md:col-span-1 lg:col-span-4">
+            <FeatureCard>
+              <Briefcase className="w-10 h-10 text-[#FF3366] mb-auto" />
+              <h3 className="text-2xl font-bold text-slate-900 uppercase mb-2 mt-8 leading-none">
+                INTERNAL <br />OPPORTUNITIES
+              </h3>
+              <p className="text-slate-500 text-sm mt-4 mb-4 leading-relaxed tracking-tight">
+                Help bench employees seamlessly discover internal projects that perfectly align with their goals and profiles.
+              </p>
             </FeatureCard>
           </div>
 
-          {/* Card 5: AI Chat */}
-          <div className="md:col-span-1 lg:col-span-4">
-            <FeatureCard innerClassName="!bg-slate-900 !border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
-              <div className="text-white text-center flex flex-col items-center justify-center h-full relative z-10">
+          {/* Card 6: AI Chat */}
+          <div className="md:col-span-2 lg:col-span-12">
+            <FeatureCard innerClassName="!bg-slate-900 !border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.2)] md:flex-row !items-center !justify-between">
+              <div className="flex-1 text-left max-w-2xl relative z-10">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#635BFF] to-[#A07CFF] flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(99,91,255,0.4)] relative">
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-white/20"
@@ -162,11 +180,25 @@ export function FeaturesBento() {
                   />
                   <Bot className="w-8 h-8 text-white relative z-10" />
                 </div>
-                <span className="font-bold uppercase tracking-[0.2em] text-sm text-slate-200">AI Career Assistant</span>
-                <p className="text-slate-400 text-sm mt-3 max-w-[200px] text-center">Ask questions about your resume, career profile, job descriptions, interviews, skills, and applications. Your AI assistant understands your professional context.</p>
+                <h3 className="text-3xl font-bold text-white uppercase mb-4 tracking-tight">AI CAREER ASSISTANT</h3>
+                <p className="text-slate-400 text-base max-w-lg">
+                  Give employees personalized insights based on their professional profile. Ask questions like: "Which internal projects match my profile?" or "What skills should I improve?"
+                </p>
               </div>
+              
+              {/* Fake UI visualization for chat */}
+              <div className="hidden lg:flex flex-col gap-4 w-[400px] mt-8 lg:mt-0 relative z-10">
+                <div className="bg-slate-800/80 backdrop-blur rounded-2xl p-4 border border-slate-700 self-end w-4/5 shadow-lg text-sm text-slate-200">
+                  Which internal projects match my React and Python skills?
+                </div>
+                <div className="bg-gradient-to-r from-[#635BFF]/20 to-[#A07CFF]/20 backdrop-blur rounded-2xl p-4 border border-[#635BFF]/30 self-start w-[90%] shadow-lg text-sm text-slate-200 flex gap-3">
+                  <Bot className="w-5 h-5 shrink-0 text-[#A07CFF] mt-0.5" />
+                  <p>Based on your profile, the <strong>AI Knowledge Platform</strong> is an 89% match. It requires Python and React. You can apply on the opportunities board.</p>
+                </div>
+              </div>
+              
               {/* Dark mode card ambient glow */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#635BFF]/20 blur-[50px] rounded-full pointer-events-none" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#635BFF]/20 blur-[80px] rounded-full pointer-events-none" />
             </FeatureCard>
           </div>
 

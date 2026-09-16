@@ -107,7 +107,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-white/70 backdrop-blur-md mb-8 shadow-sm"
           >
             <Sparkles className="w-4 h-4 text-[#FF3366]" />
-            <span className="text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-[#635BFF] to-[#FF3366] bg-clip-text text-transparent">AI-Powered Resume Intelligence</span>
+            <span className="text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-[#635BFF] to-[#FF3366] bg-clip-text text-transparent">AI-Powered Talent Intelligence</span>
           </motion.div>
 
           <motion.div
@@ -126,7 +126,7 @@ export function Hero() {
                 ProfileIQ
               </motion.h1>
             </div>
-            {["YOUR EXPERIENCE.", "YOUR SKILLS."].map((line, i) => (
+            {["INTELLIGENT", "PROFILES FOR"].map((line, i) => (
               <div key={i} className="overflow-hidden pb-4 -mb-4">
                 <motion.h1
                   variants={lineVars}
@@ -144,7 +144,7 @@ export function Hero() {
                   transition={{ duration: 6, repeat: Infinity, ease: "linear" as any }}
                   style={{ backgroundSize: '200% auto' }}
                 >
-                  YOUR NEXT OPPORTUNITY.
+                  SMARTER STAFFING.
                 </motion.h1>
               </motion.div>
             </div>
@@ -156,7 +156,7 @@ export function Hero() {
             transition={{ delay: 1, duration: 1 }}
             className="text-lg md:text-xl text-slate-600 font-normal max-w-lg leading-relaxed mb-6"
           >
-            Build a professional profile that actually represents your potential.
+            Connect employee skills, experience, project history, availability, and requirements with AI-powered intelligence.
           </motion.p>
           
           <motion.p
@@ -165,7 +165,7 @@ export function Hero() {
             transition={{ delay: 1.1, duration: 1 }}
             className="text-base text-slate-500 font-normal max-w-lg leading-relaxed mb-10"
           >
-            ProfileIQ analyzes your resume, understands your skills and experience, matches your profile with job requirements, and helps you improve your career profile with actionable AI insights.
+            Turn raw employee data into actionable project staffing intelligence. Discover the talent you already have and build stronger teams.
           </motion.p>
 
           <motion.div
@@ -175,19 +175,19 @@ export function Hero() {
             className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
           >
             <button
-              onClick={() => navigate(user ? '/analyze' : '/register')}
+              onClick={() => navigate(user ? '/dashboard' : '/register')}
               className="bg-slate-900 text-white font-bold px-8 py-4 rounded-full hover:bg-slate-800 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center gap-2 group border-none cursor-pointer"
             >
-              Analyze My Profile
+              Get Started
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <button
               onClick={() => {
-                document.getElementById('analysis')?.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="bg-white/50 backdrop-blur-sm text-slate-700 font-bold px-8 py-4 rounded-full hover:bg-white transition-all duration-300 border border-slate-200 hover:border-slate-300 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1"
             >
-              Explore Features
+              Explore Platform
             </button>
           </motion.div>
         </div>

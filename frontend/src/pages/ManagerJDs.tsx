@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, FileText, Plus, Filter, Users, MapPin, MoreHorizontal } from 'lucide-react';
+import { Search, FileText, Plus, Filter, Users, MapPin, MoreHorizontal, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import api from '../lib/api';
@@ -13,13 +14,19 @@ export function ManagerJDs() {
   
   const [newJd, setNewJd] = useState({
     title: '',
-    department: '',
-    location: '',
-    type: 'Full-time',
-    experience_level: 'Mid-Level',
+    project_id: '',
+    client_id: '',
     description: '',
-    requirements: '',
-    skills: ''
+    responsibilities: '',
+    required_skills: '',
+    preferred_skills: '',
+    experience: '',
+    seniority: 'Mid-Level',
+    employment_type: 'Full-time',
+    required_hours: 40,
+    duration: '',
+    location: '',
+    deadline: ''
   });
 
   useEffect(() => {
@@ -43,14 +50,16 @@ export function ManagerJDs() {
     try {
       await api.post('/api/manager/jds', {
         ...newJd,
-        team: newJd.department,
-        requirements: newJd.requirements.split(',').map(s => s.trim()).filter(Boolean),
-        skills: newJd.skills.split(',').map(s => s.trim()).filter(Boolean),
+        responsibilities: newJd.responsibilities.split('\n').filter(Boolean),
+        required_skills: newJd.required_skills.split(',').map(s => s.trim()).filter(Boolean),
+        preferred_skills: newJd.preferred_skills.split(',').map(s => s.trim()).filter(Boolean),
       });
       setShowCreateModal(false);
       setNewJd({
-        title: '', department: '', location: '', type: 'Full-time',
-        experience_level: 'Mid-Level', description: '', requirements: '', skills: ''
+        title: '', project_id: '', client_id: '', description: '',
+        responsibilities: '', required_skills: '', preferred_skills: '',
+        experience: '', seniority: 'Mid-Level', employment_type: 'Full-time',
+        required_hours: 40, duration: '', location: '', deadline: ''
       });
       fetchJDs();
     } catch (error) {
@@ -82,15 +91,15 @@ export function ManagerJDs() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Job Descriptions</h1>
-            <p className="text-gray-500 mt-2 text-lg">Manage your team's internal open roles and job postings.</p>
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Project Requirements</h1>
+            <p className="text-gray-500 mt-2 text-lg">Create requirements for open project roles and find matching talent.</p>
           </div>
           
           <Button 
             className="bg-[#635BFF] hover:bg-[#5046e5] text-white gap-2"
             onClick={() => setShowCreateModal(true)}
           >
-            <Plus className="w-4 h-4" /> Create JD
+            <Plus className="w-4 h-4" /> Create Requirement
           </Button>
         </div>
 
@@ -142,7 +151,7 @@ export function ManagerJDs() {
                 <h3 className="font-bold text-gray-900 text-lg group-hover:text-[#635BFF] transition-colors mb-1">{jd.title}</h3>
                 
                 <div className="flex flex-col gap-1 text-sm text-gray-500 mb-6">
-                  <span>Team: <span className="font-medium text-gray-700">{jd.department || jd.team}</span></span>
+                  {jd.project_id && <span>Project: <span className="font-medium text-gray-700">{jd.project_id}</span></span>}
                   <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {jd.location}</span>
                 </div>
 
@@ -163,7 +172,15 @@ export function ManagerJDs() {
                   </div>
                 </div>
 
-                <div className="text-xs text-gray-400 font-medium mt-2">
+                <div className="flex gap-2 mb-4 mt-auto">
+                  <Link to={`/manager/jds/${jd.id}/matches`} className="w-full">
+                    <Button className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 gap-2 border-0 h-9">
+                      <Sparkles className="w-4 h-4" /> Find Candidates
+                    </Button>
+                  </Link>
+                </div>
+
+                <div className="text-xs text-gray-400 font-medium">
                   Posted {jd.posted_at ? new Date(jd.posted_at).toLocaleDateString() : (jd.posted || 'recently')}
                 </div>
               </div>
@@ -186,36 +203,49 @@ export function ManagerJDs() {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-2xl shadow-xl border border-gray-200 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Job Description</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Project Requirement</h2>
             <form onSubmit={handleCreate} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input label="Job Title" required value={newJd.title} onChange={(e) => setNewJd({ ...newJd, title: e.target.value })} placeholder="Senior Frontend Engineer" />
-                <Input label="Department/Team" required value={newJd.department} onChange={(e) => setNewJd({ ...newJd, department: e.target.value })} placeholder="Core Platform" />
-                <Input label="Location" required value={newJd.location} onChange={(e) => setNewJd({ ...newJd, location: e.target.value })} placeholder="Remote, New York, etc." />
-                <Input label="Job Type" required value={newJd.type} onChange={(e) => setNewJd({ ...newJd, type: e.target.value })} placeholder="Full-time, Contract" />
+                <Input label="Role Title" required value={newJd.title} onChange={(e) => setNewJd({ ...newJd, title: e.target.value })} placeholder="Senior React Developer" />
+                <Input label="Project (Optional)" value={newJd.project_id} onChange={(e) => setNewJd({ ...newJd, project_id: e.target.value })} placeholder="Project ID/Name" />
+                <Input label="Location" required value={newJd.location} onChange={(e) => setNewJd({ ...newJd, location: e.target.value })} placeholder="Remote, On-site, etc." />
+                <Input label="Employment Type" required value={newJd.employment_type} onChange={(e) => setNewJd({ ...newJd, employment_type: e.target.value })} placeholder="Full-time, Contract" />
+                <Input label="Seniority Level" required value={newJd.seniority} onChange={(e) => setNewJd({ ...newJd, seniority: e.target.value })} placeholder="Mid-Level, Senior" />
+                <Input label="Years of Experience" required value={newJd.experience} onChange={(e) => setNewJd({ ...newJd, experience: e.target.value })} placeholder="5+ years" />
+                <Input label="Duration (Optional)" value={newJd.duration} onChange={(e) => setNewJd({ ...newJd, duration: e.target.value })} placeholder="6 months" />
+                <Input label="Required Hours/Week" type="number" required value={newJd.required_hours.toString()} onChange={(e) => setNewJd({ ...newJd, required_hours: parseInt(e.target.value) || 40 })} />
               </div>
-              
-              <Input label="Experience Level" required value={newJd.experience_level} onChange={(e) => setNewJd({ ...newJd, experience_level: e.target.value })} placeholder="Mid-Level, Senior" />
               
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
                 <textarea
                   required
-                  rows={4}
+                  rows={3}
                   value={newJd.description}
                   onChange={(e) => setNewJd({ ...newJd, description: e.target.value })}
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#635BFF]/20 focus:border-[#635BFF] transition-all"
-                  placeholder="Describe the role and responsibilities..."
+                  placeholder="Describe the role..."
                 />
               </div>
 
-              <Input label="Requirements (comma separated)" required value={newJd.requirements} onChange={(e) => setNewJd({ ...newJd, requirements: e.target.value })} placeholder="5+ years React, BS Computer Science" />
-              <Input label="Skills (comma separated)" required value={newJd.skills} onChange={(e) => setNewJd({ ...newJd, skills: e.target.value })} placeholder="React, TypeScript, Node.js" />
-              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Responsibilities (One per line)</label>
+                <textarea
+                  rows={3}
+                  value={newJd.responsibilities}
+                  onChange={(e) => setNewJd({ ...newJd, responsibilities: e.target.value })}
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#635BFF]/20 focus:border-[#635BFF] transition-all"
+                  placeholder="Lead development...&#10;Mentorship..."
+                />
+              </div>
+
+              <Input label="Required Skills (comma separated)" required value={newJd.required_skills} onChange={(e) => setNewJd({ ...newJd, required_skills: e.target.value })} placeholder="React, TypeScript, Node.js" />
+              <Input label="Preferred Skills (comma separated)" value={newJd.preferred_skills} onChange={(e) => setNewJd({ ...newJd, preferred_skills: e.target.value })} placeholder="GraphQL, AWS" />
+                            
               <div className="flex gap-3 pt-4 mt-6 border-t border-gray-100">
                 <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)} className="flex-1">Cancel</Button>
                 <Button type="submit" className="flex-1 bg-[#635BFF] hover:bg-[#5046e5] text-white" disabled={submitting}>
-                  {submitting ? 'Creating...' : 'Create JD'}
+                  {submitting ? 'Creating...' : 'Create Requirement'}
                 </Button>
               </div>
             </form>

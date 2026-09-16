@@ -25,6 +25,7 @@ import { Applications } from './pages/Applications';
 import { Opportunities } from './pages/Opportunities';
 import { Projects } from './pages/Projects';
 import { Messages } from './pages/Messages';
+import { Assistant } from './pages/Assistant';
 import { Help } from './pages/Help';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminUsers } from './pages/AdminUsers';
@@ -35,6 +36,7 @@ import { ManagerTeam } from './pages/ManagerTeam';
 import { ManagerProjects } from './pages/ManagerProjects';
 import { ManagerJDs } from './pages/ManagerJDs';
 import { ManagerApplications } from './pages/ManagerApplications';
+import { ManagerCandidates } from './pages/ManagerCandidates';
 
 import { DashboardLayout } from './components/dashboard/DashboardLayout';
 
@@ -126,6 +128,13 @@ function AppLayout() {
               </DashboardLayout>
             </ProtectedRoute>
           } />
+          <Route path="/manager/jds/:jdId/matches" element={
+            <ProtectedRoute allowedRoles={['admin', 'manager']}>
+              <DashboardLayout>
+                <ManagerCandidates />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
           <Route path="/manager/messages" element={
             <ProtectedRoute allowedRoles={['admin', 'manager']}>
               <DashboardLayout>
@@ -195,6 +204,13 @@ function AppLayout() {
             <ProtectedRoute allowedRoles={['employee', 'manager', 'admin']}>
               <DashboardLayout>
                 <Messages />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard/assistant" element={
+            <ProtectedRoute allowedRoles={['employee', 'manager', 'admin']}>
+              <DashboardLayout>
+                <Assistant />
               </DashboardLayout>
             </ProtectedRoute>
           } />

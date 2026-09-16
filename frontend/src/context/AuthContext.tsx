@@ -1,6 +1,29 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '../lib/api';
 
+export interface ProjectHistoryItem {
+  project_name: string;
+  client?: string;
+  role: string;
+  technologies: string[];
+  start_date?: string;
+  end_date?: string;
+  responsibilities: string[];
+  achievements: string[];
+}
+
+export interface EducationItem {
+  degree: string;
+  institution: string;
+  year: string;
+}
+
+export interface CertificationItem {
+  name: string;
+  issuer: string;
+  year: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -14,6 +37,10 @@ export interface User {
   target_role?: string;
   experience_level?: string;
   skills?: string[];
+  project_history?: ProjectHistoryItem[];
+  education?: EducationItem[];
+  certifications?: CertificationItem[];
+  availability_status?: 'available' | 'partially_allocated' | 'allocated' | 'on_leave' | 'bench';
 }
 
 interface AuthContextType {

@@ -19,7 +19,22 @@ export function Profile() {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'skills'>('profile');
 
-  const skills = ['React.js', 'TypeScript', 'Node.js', 'System Design', 'Figma', 'Python'];
+  const [skills, setSkills] = useState<string[]>(user?.skills || []);
+  const [newSkill, setNewSkill] = useState('');
+
+  const handleAddSkill = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && newSkill.trim()) {
+      e.preventDefault();
+      if (!skills.includes(newSkill.trim())) {
+        setSkills([...skills, newSkill.trim()]);
+      }
+      setNewSkill('');
+    }
+  };
+
+  const handleRemoveSkill = (skillToRemove: string) => {
+    setSkills(skills.filter(s => s !== skillToRemove));
+  };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +42,12 @@ export function Profile() {
     setMessage({ type: '', text: '' });
     
     try {
-      await api.put('/api/users/profile', { full_name: fullName, target_role: targetRole, experience_level: experienceLevel });
+      await api.put('/api/users/profile', { 
+        full_name: fullName, 
+        target_role: targetRole, 
+        experience_level: experienceLevel,
+        skills: skills 
+      });
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
     } catch (error) {
       setMessage({ type: 'error', text: 'Failed to update profile. Please try again.' });
@@ -224,15 +244,25 @@ export function Profile() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">Verified Skills</label>
-                <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-xl border border-gray-200 min-h-[60px]">
-                  {skills.map(skill => (
-                    <span key={skill} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-gray-700 rounded-lg text-sm font-medium border border-gray-200 hover:border-[#635BFF]/30 hover:text-[#635BFF] transition-colors cursor-pointer">
-                      {skill}
-                      <span className="text-gray-400 hover:text-red-500 ml-1 leading-none">&times;</span>
-                    </span>
-                  ))}
+                <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 min-h-[60px]">
+                  <div className="flex flex-wrap gap-2">
+                    {skills.map(skill => (
+                      <span key={skill} onClick={() => handleRemoveSkill(skill)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-gray-700 rounded-lg text-sm font-medium border border-gray-200 hover:border-red-200 hover:text-red-600 transition-colors cursor-pointer group">
+                        {skill}
+                        <span className="text-gray-400 group-hover:text-red-500 ml-1 leading-none">&times;</span>
+                      </span>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    onKeyDown={handleAddSkill}
+                    placeholder="Type a skill and press Enter to add..."
+                    className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-[#635BFF] focus:outline-none focus:ring-1 focus:ring-[#635BFF] transition-all"
+                  />
                 </div>
-                <p className="text-xs text-gray-400 mt-2">Click a skill to remove it. Your manager can also add verified skills to your profile.</p>
+                <p className="text-xs text-gray-400 mt-2">Click a skill to remove it. Press enter to add a new skill. These skills are used for AI Matching.</p>
               </div>
 
               <div className="flex justify-end pt-2">

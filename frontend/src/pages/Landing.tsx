@@ -3,19 +3,10 @@ import { CustomCursor } from '../components/portfolio/CustomCursor';
 import { ScrollProgress } from '../components/portfolio/ScrollProgress';
 import { Preloader } from '../components/resume-ai/Preloader';
 
-// Resume AI Components
 import { Navbar } from '../components/resume-ai/Navbar';
 import { Hero } from '../sections/resume-ai/Hero';
-import { AIAnalysis } from '../sections/resume-ai/AIAnalysis';
-import { ResumeTransformation } from '../sections/resume-ai/ResumeTransformation';
-import { JobMatching } from '../sections/resume-ai/JobMatching';
 import { FeaturesBento } from '../sections/resume-ai/FeaturesBento';
-import { ProfileEvolves } from '../sections/resume-ai/ProfileEvolves';
-import { RecruitersView } from '../sections/resume-ai/RecruitersView';
-import { CareerData } from '../sections/resume-ai/CareerData';
-import { CareerFlow } from '../sections/resume-ai/CareerFlow';
-import { Privacy } from '../sections/resume-ai/Privacy';
-import { Pricing } from '../sections/resume-ai/Pricing';
+import { Workflow } from '../sections/resume-ai/Workflow';
 import { CTA } from '../sections/resume-ai/CTA';
 
 export function Landing() {
@@ -32,25 +23,9 @@ export function Landing() {
       <Navbar />
       
       <main>
-        {/* Product Journey */}
         <Hero />
-        <AIAnalysis />
-        <ResumeTransformation />
-        <JobMatching />
-        
-        {/* Supporting Content */}
         <FeaturesBento />
-        
-        {/* ProfileIQ Expanded Content */}
-        <ProfileEvolves />
-        <RecruitersView />
-        <CareerData />
-        <CareerFlow />
-        <Privacy />
-
-        <Pricing />
-        
-        {/* Conclusion */}
+        <Workflow />
         <CTA />
       </main>
     </div>

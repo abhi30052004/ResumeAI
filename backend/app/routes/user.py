@@ -5,6 +5,7 @@ from typing import Optional, List
 from ..database import get_database
 from ..models.user import UserResponse
 from ..dependencies import get_current_user
+from bson import ObjectId
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
@@ -41,3 +42,22 @@ async def update_profile(
         experience_level=user.get("experience_level"),
         skills=user.get("skills", [])
     )
+
+@router.get("", response_model=List[dict])
+async def get_all_users(
+    current_user: UserResponse = Depends(get_current_user)
+):
+    db = get_database()
+    # Get all active users except current user
+    cursor = db.users.find({"_id": {"$ne": ObjectId(current_user.id)}, "status": "active"})
+    users = await cursor.to_list(length=1000)
+    
+    return [
+        {
+            "id": str(u["_id"]),
+            "name": u.get("full_name", ""),
+            "role": u.get("role", ""),
+            "photo_url": u.get("photo_url", "")
+        }
+        for u in users
+    ]

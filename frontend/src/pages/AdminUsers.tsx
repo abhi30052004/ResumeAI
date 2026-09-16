@@ -3,11 +3,14 @@ import api from '../lib/api';
 import { User } from '../context/AuthContext';
 import { Loader2, Check, X, ShieldAlert, Users, Search, MoreHorizontal, Filter } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { UserModal } from '../components/admin/UserModal';
 
 export function AdminUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -61,6 +64,9 @@ export function AdminUsers() {
             <h1 className="text-3xl font-bold text-gray-900 tracking-tight">User Management</h1>
             <p className="text-gray-500 mt-2 text-lg">Manage employees and approve manager accounts.</p>
           </div>
+          <Button onClick={() => { setSelectedUser(null); setIsModalOpen(true); }} className="bg-[#635BFF] hover:bg-[#5046e5] text-white gap-2">
+            Add User
+          </Button>
         </div>
 
         {/* Pending Approvals Section */}
@@ -175,7 +181,10 @@ export function AdminUsers() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                      <button 
+                        onClick={() => { setSelectedUser(user); setIsModalOpen(true); }}
+                        className="p-2 text-gray-400 hover:text-[#635BFF] hover:bg-indigo-50 rounded-lg transition-colors"
+                      >
                         <MoreHorizontal className="w-5 h-5" />
                       </button>
                     </td>
@@ -198,6 +207,15 @@ export function AdminUsers() {
         </div>
 
       </div>
+      
+      {isModalOpen && (
+        <UserModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={fetchUsers}
+          user={selectedUser}
+        />
+      )}
     </div>
   );
 }

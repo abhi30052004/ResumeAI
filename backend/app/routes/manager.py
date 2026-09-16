@@ -44,13 +44,18 @@ async def get_team(current_user: UserResponse = Depends(require_manager)):
 
 class JDCreate(BaseModel):
     title: str
-    team: str
+    project_id: Optional[str] = None
+    client_id: Optional[str] = None
     location: Optional[str] = "Remote"
-    type: Optional[str] = "Full-time"
-    experience_level: Optional[str] = "Mid-Level"
+    employment_type: Optional[str] = "Full-time"
+    seniority: Optional[str] = "Mid-Level"
+    experience: Optional[str] = ""
+    duration: Optional[str] = None
+    required_hours: Optional[int] = 40
     description: Optional[str] = None
-    requirements: Optional[List[str]] = []
-    skills: Optional[List[str]] = []
+    responsibilities: Optional[List[str]] = []
+    required_skills: Optional[List[str]] = []
+    preferred_skills: Optional[List[str]] = []
 
 
 class JDUpdate(BaseModel):
@@ -64,6 +69,11 @@ async def list_all_jds(current_user: UserResponse = Depends(get_current_user)):
     db = get_database()
     cursor = db.job_descriptions.find({"status": "Active"}).sort("created_at", -1)
     jds = await cursor.to_list(length=100)
+    
+    # Get current user's skills
+    emp = await db.users.find_one({"_id": ObjectId(current_user.id)})
+    emp_skills = set([s.lower() for s in emp.get("skills", [])]) if emp else set()
+    
     result = []
     for jd in jds:
         created = jd.get("created_at")
@@ -71,14 +81,25 @@ async def list_all_jds(current_user: UserResponse = Depends(get_current_user)):
         if created:
             delta = (datetime.now(timezone.utc) - created.replace(tzinfo=timezone.utc) if created.tzinfo is None else datetime.now(timezone.utc) - created)
             days_ago = f"{delta.days} days ago" if delta.days > 0 else "Today"
+            
+        jd_skills = set([s.lower() for s in jd.get("required_skills", [])])
+        matched = jd_skills.intersection(emp_skills)
+        missing = jd_skills - emp_skills
+        
+        score = 85
+        if len(jd_skills) > 0:
+            score = int((len(matched) / len(jd_skills)) * 100)
+            
         result.append({
             "id": str(jd["_id"]),
             "title": jd.get("title", ""),
-            "team": jd.get("team", ""),
+            "project_id": jd.get("project_id", ""),
             "location": jd.get("location", "Remote"),
             "description": jd.get("description", ""),
-            "skills": jd.get("skills", []),
-            "match": 85, # Default match score for now, this could be calculated later based on profile
+            "skills": jd.get("required_skills", []),
+            "match": score,
+            "matched_skills": [s.title() for s in matched],
+            "missing_skills": [s.title() for s in missing],
             "posted": days_ago,
         })
     return result
@@ -100,10 +121,10 @@ async def list_jds(current_user: UserResponse = Depends(require_manager)):
         result.append({
             "id": str(jd["_id"]),
             "title": jd.get("title", ""),
-            "team": jd.get("team", ""),
+            "project_id": jd.get("project_id", ""),
             "location": jd.get("location", "Remote"),
             "description": jd.get("description", ""),
-            "skills": jd.get("skills", []),
+            "skills": jd.get("required_skills", []),
             "status": jd.get("status", "Active"),
             "applicants": applicant_count,
             "posted": days_ago,
@@ -233,6 +254,64 @@ async def update_application_status(
 # ──────────────────────────────────────────────────────────────
 # DASHBOARD STATS (for manager overview)
 # ──────────────────────────────────────────────────────────────
+
+@router.get("/jds/{jd_id}/matches", response_model=Dict)
+async def get_jd_matches(jd_id: str, current_user: UserResponse = Depends(require_manager)):
+    db = get_database()
+    jd = await db.job_descriptions.find_one({"_id": ObjectId(jd_id)})
+    if not jd:
+        raise HTTPException(404, "Requirement not found")
+        
+    # Get all active employees (simplified matching logic for MVP)
+    cursor = db.users.find({"role": "employee", "status": "active"})
+    employees = await cursor.to_list(length=100)
+    
+    matches = []
+    jd_skills = set([s.lower() for s in jd.get("required_skills", [])])
+    
+    for emp in employees:
+        emp_skills = set([s.lower() for s in emp.get("skills", [])])
+        matched = jd_skills.intersection(emp_skills)
+        missing = jd_skills - emp_skills
+        
+        # Calculate a mock score based on skills matched
+        score = 85
+        if len(jd_skills) > 0:
+            score = int((len(matched) / len(jd_skills)) * 100)
+            if score < 50:
+                continue # Skip low matches
+                
+        # Mock AI Explanation
+        if score >= 90:
+            explanation = f"{emp.get('full_name')} is an excellent fit, possessing {len(matched)} of the required skills including {', '.join(list(matched)[:3])}."
+        elif score >= 70:
+            explanation = f"{emp.get('full_name')} is a strong candidate but would need to upskill in {', '.join(list(missing)[:2])}."
+        else:
+            explanation = f"{emp.get('full_name')} meets basic requirements."
+
+        matches.append({
+            "id": str(emp["_id"]),
+            "name": emp.get("full_name", ""),
+            "role": emp.get("target_role") or emp.get("experience_level") or "Employee",
+            "photo_url": emp.get("photo_url"),
+            "location": emp.get("location", "Remote"),
+            "match_score": score,
+            "ai_explanation": explanation,
+            "matched_skills": [s.title() for s in matched],
+            "missing_skills": [s.title() for s in missing],
+        })
+        
+    # Sort matches by score descending
+    matches.sort(key=lambda x: x["match_score"], reverse=True)
+
+    return {
+        "jd": {
+            "title": jd.get("title", ""),
+            "description": jd.get("description", "")
+        },
+        "matches": matches[:10] # Return top 10
+    }
+
 
 @router.get("/stats", response_model=Dict)
 async def get_manager_stats(current_user: UserResponse = Depends(require_manager)):
