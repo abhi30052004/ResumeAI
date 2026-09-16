@@ -13,7 +13,7 @@ export function CTA() {
     x: [0, 50, 0, -50, 0],
     y: [0, -30, -60, -30, 0],
     scale: [1, 1.2, 0.8, 1.1, 1],
-    transition: { duration: 20, repeat: Infinity, ease: "linear" }
+    transition: { duration: 20, repeat: Infinity, ease: "linear" as any }
   };
 
   return (
@@ -31,7 +31,7 @@ export function CTA() {
             className="absolute top-[20%] left-[20%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#635BFF]/30 to-[#FF3366]/30 blur-[100px] mix-blend-screen opacity-50"
           />
           <motion.div
-            animate={{ ...blobAnimation, transition: { duration: 25, repeat: Infinity, ease: "linear" } }}
+            animate={{ ...blobAnimation, transition: { duration: 25, repeat: Infinity, ease: "linear" as any } }}
             className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] rounded-full bg-gradient-to-bl from-[#A07CFF]/20 to-[#635BFF]/20 blur-[120px] mix-blend-screen opacity-50"
           />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-20" />

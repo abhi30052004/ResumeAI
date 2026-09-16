@@ -19,7 +19,7 @@ export function JobMatching() {
     x: [0, 40, 0, -40, 0],
     y: [0, -30, -60, -30, 0],
     scale: [1, 1.1, 0.9, 1.05, 1],
-    transition: { duration: 18, repeat: Infinity, ease: "linear" }
+    transition: { duration: 18, repeat: Infinity, ease: "linear" as any }
   };
 
   return (
@@ -31,7 +31,7 @@ export function JobMatching() {
           className="absolute top-[10%] right-[10%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#635BFF]/15 to-[#A07CFF]/15 blur-[100px] mix-blend-multiply opacity-60"
         />
         <motion.div
-          animate={{ ...blobAnimation, transition: { duration: 22, repeat: Infinity, ease: "linear" } }}
+          animate={{ ...blobAnimation, transition: { duration: 22, repeat: Infinity, ease: "linear" as any } }}
           className="absolute bottom-[20%] left-[5%] w-[450px] h-[450px] rounded-full bg-gradient-to-bl from-[#27C93F]/10 to-[#8EE09C]/10 blur-[100px] mix-blend-multiply opacity-50"
         />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLDAsMCwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-70" />
@@ -102,7 +102,7 @@ export function JobMatching() {
                       <motion.div
                         className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#635BFF] to-transparent shadow-[0_0_15px_rgba(99,91,255,0.8)]"
                         animate={{ top: ["0%", "100%", "0%"] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" as any }}
                       />
                     )}
                   </div>

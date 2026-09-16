@@ -28,7 +28,7 @@ export function Hero() {
     const controls = animate(scoreValue, 87, {
       duration: 2,
       delay: 1.5,
-      ease: "easeOut",
+      ease: "easeOut" as any,
       onUpdate: (latest) => setDisplayScore(Math.round(latest))
     });
 
@@ -45,7 +45,7 @@ export function Hero() {
       y: 0,
       clipPath: 'inset(0% 0 0 0)',
       filter: 'blur(0px)',
-      transition: { duration: 1.2, ease: "easeOut" }
+      transition: { duration: 1.2, ease: "easeOut" as any }
     }
   };
 
@@ -56,7 +56,7 @@ export function Hero() {
       duration: 4,
       repeat: Infinity,
       repeatType: "reverse" as const,
-      ease: "easeInOut"
+      ease: "easeInOut" as any
     }
   };
 
@@ -65,14 +65,14 @@ export function Hero() {
     x: [0, 50, 0, -50, 0],
     y: [0, 30, 60, 30, 0],
     scale: [1, 1.1, 0.9, 1.05, 1],
-    transition: { duration: 15, repeat: Infinity, ease: "linear" }
+    transition: { duration: 15, repeat: Infinity, ease: "linear" as any }
   };
 
   const blob2Animation = {
     x: [0, -40, 20, -20, 0],
     y: [0, -50, -20, 10, 0],
     scale: [1, 0.9, 1.1, 0.95, 1],
-    transition: { duration: 18, repeat: Infinity, ease: "linear" }
+    transition: { duration: 18, repeat: Infinity, ease: "linear" as any }
   };
 
   return (
@@ -88,7 +88,7 @@ export function Hero() {
           className="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] rounded-full bg-gradient-to-bl from-[#FF3366]/20 to-[#FF8A8A]/20 blur-[100px] mix-blend-multiply opacity-70"
         />
         <motion.div
-          animate={{ ...blob1Animation, transition: { duration: 22, repeat: Infinity, ease: "linear" } }}
+          animate={{ ...blob1Animation, transition: { duration: 22, repeat: Infinity, ease: "linear" as any } }}
           className="absolute top-[30%] left-[40%] w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#27C93F]/10 to-[#10b981]/10 blur-[100px] mix-blend-multiply opacity-60"
         />
 
@@ -141,7 +141,7 @@ export function Hero() {
                 <motion.h1
                   className="text-[clamp(48px,8vw,110px)] font-bold tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-[#635BFF] via-[#A07CFF] to-[#FF3366]"
                   animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "linear" as any }}
                   style={{ backgroundSize: '200% auto' }}
                 >
                   YOUR NEXT OPPORTUNITY.
@@ -208,7 +208,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, rotateX: 15, rotateY: -15, z: -100 }}
             animate={{ opacity: 1, rotateX: 0, rotateY: 0, z: 0 }}
-            transition={{ duration: 1.5, ease: "easeOut", delay: 0.8 }}
+            transition={{ duration: 1.5, ease: "easeOut" as any, delay: 0.8 }}
             className="w-full max-w-[540px] mx-auto bg-white/80 backdrop-blur-2xl rounded-3xl border border-white shadow-[0_30px_80px_rgba(0,0,0,0.08)] overflow-hidden relative"
           >
             {/* Light glossy overlay */}
@@ -251,7 +251,7 @@ export function Hero() {
                       strokeLinecap="round"
                       initial={{ strokeDasharray: "0 251" }}
                       animate={{ strokeDasharray: "218 251" }} // 87%
-                      transition={{ duration: 2.5, delay: 1.5, ease: "easeOut" }}
+                      transition={{ duration: 2.5, delay: 1.5, ease: "easeOut" as any }}
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -277,13 +277,13 @@ export function Hero() {
                         className={`h-full bg-gradient-to-r ${item.color} relative rounded-full`}
                         initial={{ width: 0 }}
                         animate={{ width: item.score }}
-                        transition={{ duration: 1.5, delay: 2 + (i * 0.2), ease: "easeOut" }}
+                        transition={{ duration: 1.5, delay: 2 + (i * 0.2), ease: "easeOut" as any }}
                       >
                         {/* Shimmer effect inside progress bar */}
                         <motion.div
                           className="absolute top-0 bottom-0 left-0 right-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
                           animate={{ x: ['-100%', '200%'] }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 3 }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "linear" as any, delay: 3 }}
                         />
                       </motion.div>
                     </div>

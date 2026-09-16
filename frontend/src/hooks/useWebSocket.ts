@@ -15,7 +15,7 @@ interface UseWebSocketOptions {
 export function useWebSocket(url: string | null, options: UseWebSocketOptions = {}) {
   const wsRef = useRef<WebSocket | null>(null);
   const handlersRef = useRef<Map<string, EventHandler[]>>(new Map());
-  const reconnectTimer = useRef<ReturnType<typeof setTimeout>>();
+  const reconnectTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const reconnectAttempts = useRef(0);
   const maxReconnects = 10;
 

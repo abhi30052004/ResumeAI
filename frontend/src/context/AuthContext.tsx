@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '../lib/api';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   full_name: string;
@@ -13,6 +13,7 @@ interface User {
   account_status: 'pending' | 'approved' | 'rejected';
   target_role?: string;
   experience_level?: string;
+  skills?: string[];
 }
 
 interface AuthContextType {

@@ -23,7 +23,7 @@ export function ResumeTransformation() {
     x: [0, -30, 0, 30, 0],
     y: [0, -40, -20, 20, 0],
     scale: [1, 1.05, 0.95, 1.02, 1],
-    transition: { duration: 20, repeat: Infinity, ease: "linear" }
+    transition: { duration: 20, repeat: Infinity, ease: "linear" as any }
   };
 
   return (
