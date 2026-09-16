@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useToast } from '../../context/ToastContext';
 import { X, User as UserIcon, Mail, Briefcase, Star, Plus } from 'lucide-react';
 import { Button } from '../ui/Button';
 import api from '../../lib/api';
@@ -12,6 +13,8 @@ interface UserModalProps {
 }
 
 export function UserModal({ isOpen, onClose, onSuccess, user }: UserModalProps) {
+  const { toast } = useToast();
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     full_name: user?.full_name || '',
@@ -36,7 +39,7 @@ export function UserModal({ isOpen, onClose, onSuccess, user }: UserModalProps) 
       } else {
         // Create user (assuming backend has a register endpoint for admin)
         // For now, this is a placeholder as PRD requires creating employees
-        alert("Create User API integration needed.");
+        toast("Create User API integration needed.");
       }
       onSuccess();
       onClose();

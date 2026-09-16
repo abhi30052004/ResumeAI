@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
@@ -32,6 +33,8 @@ const TemplateMap: Record<string, React.FC<any>> = {
 };
 
 export function ResumeBuilder() {
+  const { toast } = useToast();
+
   const [sections, setSections] = useState<any[]>([
     { id: '1', type: 'Personal Information', content: '', data: { fullName: '', email: '', phone: '', location: '' } },
     { id: '2', type: 'Professional Summary', content: '' },
@@ -63,7 +66,7 @@ export function ResumeBuilder() {
       setSections(newSections);
     } catch (error) {
       console.error('Failed to generate AI content', error);
-      alert('Failed to generate content. Please try again.');
+      toast('Failed to generate content. Please try again.');
     } finally {
       setGeneratingFor(null);
     }
@@ -216,7 +219,7 @@ export function ResumeBuilder() {
                 <option value="BoldTemplate">Bold Template</option>
                 <option value="StartupTemplate">Startup Template</option>
               </select>
-              <Button size="sm" className="gap-2" onClick={() => alert('Download feature coming soon!')}>
+              <Button size="sm" className="gap-2" onClick={() => toast('Download feature coming soon!')}>
                 <Download className="w-4 h-4" /> Download PDF
               </Button>
             </div>

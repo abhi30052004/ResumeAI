@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 import { Search, Filter, Sparkles, Building2, MapPin, Briefcase, ArrowRight, Clock } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/api';
 
 export function Opportunities() {
+  const { toast } = useToast();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,9 +31,9 @@ export function Opportunities() {
     try {
       setApplying(id);
       await api.post(`/api/manager/jds/${id}/apply`);
-      alert('Successfully applied!');
+      toast('Successfully applied!');
     } catch (error: any) {
-      alert(error.response?.data?.detail || 'Failed to apply. You may have already applied.');
+      toast(error.response?.data?.detail || 'Failed to apply. You may have already applied.');
     } finally {
       setApplying(null);
     }
@@ -66,7 +69,7 @@ export function Opportunities() {
             <Button 
               variant="outline" 
               className="border-dash-border bg-white gap-2"
-              onClick={() => alert('Advanced filters are coming soon.')}
+              onClick={() => toast('Advanced filters are coming soon.')}
             >
               <Filter className="w-4 h-4" /> Filters
             </Button>

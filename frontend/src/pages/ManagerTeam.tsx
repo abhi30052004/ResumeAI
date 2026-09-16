@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 import { Search, Users, Filter, Briefcase, TrendingUp, Mail, ExternalLink } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/api';
 
 export function ManagerTeam() {
+  const { toast } = useToast();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [team, setTeam] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,7 +121,7 @@ export function ManagerTeam() {
                     className="flex-1 border-gray-200 gap-2 h-9 text-gray-600 hover:text-gray-900"
                     onClick={() => {
                       if (member.email) window.location.href = `mailto:${member.email}`;
-                      else alert('Email address not found for this user.');
+                      else toast('Email address not found for this user.');
                     }}
                   >
                     <Mail className="w-4 h-4" /> Message
@@ -126,7 +129,7 @@ export function ManagerTeam() {
                   <Button 
                     variant="outline" 
                     className="flex-1 border-gray-200 gap-2 h-9 text-[#635BFF] hover:bg-indigo-50 border-[#635BFF]/30"
-                    onClick={() => alert(`Profile view for ${member.name} is coming soon!`)}
+                    onClick={() => toast(`Profile view for ${member.name} is coming soon!`)}
                   >
                     Profile <ExternalLink className="w-4 h-4" />
                   </Button>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 import { Search, Plus, Filter, Building2, MapPin, Calendar, ArrowRight, MoreHorizontal, CheckCircle2, Clock, XCircle, Loader2, ExternalLink } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/api';
@@ -21,6 +22,8 @@ const statusIcons = {
 };
 
 export function Applications() {
+  const { toast } = useToast();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [applications, setApplications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,7 +52,7 @@ export function Applications() {
       await api.patch(`/api/applications/${appId}`, { status: newStatus });
     } catch (error) {
       console.error('Failed to update status', error);
-      alert('Failed to update status.');
+      toast('Failed to update status.');
       // Revert if needed, simple refresh for now
       fetchApplications();
     }

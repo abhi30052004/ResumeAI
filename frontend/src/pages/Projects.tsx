@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 import { FolderKanban, Clock, Users, ArrowRight, Plus } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/api';
 
 export function Projects() {
+  const { toast } = useToast();
+
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +37,7 @@ export function Projects() {
           
           <Button 
             className="bg-[#635BFF] hover:bg-[#5046e5] text-white gap-2"
-            onClick={() => alert("Your request for a project change has been submitted to your manager.")}
+            onClick={() => toast("Your request for a project change has been submitted to your manager.")}
           >
             <Plus className="w-4 h-4" /> Request Project Change
           </Button>

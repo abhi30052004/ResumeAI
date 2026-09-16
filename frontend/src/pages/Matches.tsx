@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 import { Search, MapPin, DollarSign, Briefcase, Filter, ExternalLink, Sparkles, Clock, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/api';
@@ -6,6 +7,8 @@ import api from '../lib/api';
 // No mock data - live scrape only
 
 export function Matches() {
+  const { toast } = useToast();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [location, setLocation] = useState('Worldwide');
   const [jobs, setJobs] = useState<any[]>([]);
@@ -29,7 +32,7 @@ export function Matches() {
       // Optionally you could show a success toast here
     } catch (error) {
       console.error('Failed to track job', error);
-      alert('Failed to track job. Please try again.');
+      toast('Failed to track job. Please try again.');
       setTrackingJobs(prev => ({ ...prev, [job.id]: false }));
     }
   };
@@ -48,7 +51,7 @@ export function Matches() {
       setJobs(response.data);
     } catch (error) {
       console.error('Failed to search jobs', error);
-      alert('Failed to search jobs. Please try again later.');
+      toast('Failed to search jobs. Please try again later.');
       setJobs([]); // Clear on error
     } finally {
       setIsLoading(false);
@@ -57,7 +60,7 @@ export function Matches() {
 
   const loadMore = async () => {
     if (!searchTerm.trim()) {
-      alert("Please enter a search term first.");
+      toast("Please enter a search term first.");
       return;
     }
     setIsLoadingMore(true);
@@ -71,7 +74,7 @@ export function Matches() {
       setPage(p => p + 1);
     } catch (error) {
       console.error('Failed to load more jobs', error);
-      alert('Failed to load more jobs. Please try again later.');
+      toast('Failed to load more jobs. Please try again later.');
     } finally {
       setIsLoadingMore(false);
     }

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 import { Search, Briefcase, Filter, Check, X, Sparkles, MapPin, Mail, Calendar } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/api';
 
 export function ManagerApplications() {
+  const { toast } = useToast();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -136,7 +139,7 @@ export function ManagerApplications() {
                     className="flex-1 border-gray-200 gap-2 h-9 text-gray-600 hover:text-gray-900"
                     onClick={() => {
                       if (app.email) window.location.href = `mailto:${app.email}`;
-                      else alert('Email address not found for this applicant.');
+                      else toast('Email address not found for this applicant.');
                     }}
                   >
                     <Mail className="w-4 h-4" /> Message

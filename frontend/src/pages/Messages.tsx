@@ -20,6 +20,7 @@ export function Messages() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [allUsers, setAllUsers] = useState<{id: string, name: string, photo_url?: string}[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const typingTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -108,7 +109,8 @@ export function Messages() {
   };
 
   const handleActionClick = (action: string) => {
-    alert(`${action} feature will be available in the next update!`);
+    setToastMessage(`${action} feature will be available in the next update!`);
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
   return (
@@ -395,6 +397,14 @@ export function Messages() {
                 <PhoneOff className="w-7 h-7" />
               </button>
             </div>
+          </div>
+        )}
+
+        {/* ── Toast Notification ── */}
+        {toastMessage && (
+          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 z-[60] transition-all transform animate-in fade-in slide-in-from-bottom-5">
+            <div className="w-2 h-2 bg-[#635BFF] rounded-full animate-pulse" />
+            <span className="text-sm font-medium">{toastMessage}</span>
           </div>
         )}
 

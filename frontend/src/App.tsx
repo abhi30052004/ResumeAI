@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import { ChatProvider } from './context/ChatContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -279,13 +280,15 @@ function ImproveRedirect() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <ChatProvider>
-          <CustomCursor />
-          <CallModal />
-          <AppLayout />
-        </ChatProvider>
-      </Router>
+      <ToastProvider>
+        <Router>
+          <ChatProvider>
+            <CustomCursor />
+            <CallModal />
+            <AppLayout />
+          </ChatProvider>
+        </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 }
