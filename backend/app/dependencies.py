@@ -39,7 +39,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         account_status=user.get("account_status", "approved"),
         target_role=user.get("target_role"),
         experience_level=user.get("experience_level"),
-        skills=user.get("skills", [])
+        skills=user.get("skills", []),
+        has_resume=bool(user.get("resume_text")),
+        resume_text=user.get("resume_text")
     )
 
 async def require_admin(current_user: UserResponse = Depends(get_current_user)):

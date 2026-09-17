@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
     await close_mongo_connection()
 
 app = FastAPI(
-    title="Resume AI API",
+    title="PROFILE IQ API",
     description="Backend API for AI Resume Improver",
     version="1.0.0",
     lifespan=lifespan
@@ -52,4 +52,4 @@ app.include_router(manager_router.router)
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Resume AI API"}
+    return {"message": "Welcome to PROFILE IQ API"}

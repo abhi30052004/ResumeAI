@@ -135,3 +135,50 @@ async def generate_resume_section_with_ai(section_name: str, current_content: st
         return {
             "generated_text": current_content + "\n(AI generated mock content due to API failure or dummy key. Configure OpenAI API key to use real AI.)"
         }
+
+async def tailor_resume_for_job(resume_text: str, jd_text: str) -> dict:
+    prompt = f"""
+    You are an expert ATS optimizer and career coach.
+    You are given a candidate's resume and a target job description.
+    
+    1. Score the resume's match for this job out of 100.
+    2. Provide exactly 3 specific, actionable suggestions for how the candidate can improve their resume for this role.
+    3. Generate a complete, improved version of the resume text tailored specifically to this job description. Optimize keywords and highlight relevant experience, without inventing false information.
+
+    Resume Text:
+    {resume_text}
+    
+    Job Description:
+    {jd_text}
+    
+    You must return a raw JSON object with this exact schema:
+    {{
+      "match_score": 0,
+      "suggestions": ["suggestion 1", "suggestion 2", "suggestion 3"],
+      "improved_resume_text": "Complete tailored resume text..."
+    }}
+    """
+    
+    try:
+        response = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an expert AI resume writer and career coach."},
+                {"role": "user", "content": prompt}
+            ],
+            response_format={ "type": "json_object" }
+        )
+        content = response.choices[0].message.content
+        return json.loads(content)
+    except Exception as e:
+        print(f"OpenAI Error: {e}")
+        # Return fallback mock data
+        return {
+            "match_score": 85,
+            "suggestions": [
+                "Add more metrics to your recent role.",
+                "Highlight your frontend architecture experience.",
+                "Include more keywords from the job description."
+            ],
+            "improved_resume_text": resume_text + "\n\n(Note: This is a mock improved resume because the OpenAI API key is missing or invalid. Please configure a valid key to see the actual AI-tailored resume.)"
+        }

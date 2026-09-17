@@ -53,7 +53,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
             onClick={onClose}
             className="fixed inset-0 bg-dash-bg/60 backdrop-blur-sm z-50"
           />
-          
+
           {/* Palette */}
           <div className="fixed inset-0 pointer-events-none z-50 flex items-start justify-center pt-[15vh] px-4">
             <motion.div
@@ -69,7 +69,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Search Resume AI..."
+                  placeholder="Search PROFILE IQ..."
                   className="flex-1 bg-transparent border-none outline-none text-dash-text-primary placeholder:text-dash-text-secondary/70 text-lg"
                 />
                 <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 bg-dash-secondary rounded text-xs font-medium text-dash-text-secondary">
@@ -103,7 +103,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                   </button>
                 ))}
               </div>
-              
+
               <div className="px-4 py-3 bg-dash-secondary/30 border-t border-dash-border flex items-center justify-between text-xs text-dash-text-secondary">
                 <div className="flex gap-4">
                   <span className="flex items-center gap-1"><kbd className="bg-dash-secondary px-1.5 py-0.5 rounded border border-dash-border">↑</kbd><kbd className="bg-dash-secondary px-1.5 py-0.5 rounded border border-dash-border">↓</kbd> Navigate</span>

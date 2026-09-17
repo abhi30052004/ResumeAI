@@ -169,8 +169,11 @@ async def delete_jd(jd_id: str, current_user: UserResponse = Depends(require_man
     return {"success": True}
 
 
+class ApplyRequest(BaseModel):
+    tailored_resume_text: Optional[str] = None
+
 @router.post("/jds/{jd_id}/apply")
-async def apply_to_jd(jd_id: str, current_user: UserResponse = Depends(get_current_user)):
+async def apply_to_jd(jd_id: str, body: Optional[ApplyRequest] = None, current_user: UserResponse = Depends(get_current_user)):
     db = get_database()
     jd = await db.job_descriptions.find_one({"_id": ObjectId(jd_id)})
     if not jd:
@@ -190,10 +193,30 @@ async def apply_to_jd(jd_id: str, current_user: UserResponse = Depends(get_curre
         "applicant_name": current_user.full_name,
         "status": "Applied",
         "match_score": 85, # Default match score, could be calculated
-        "applied_at": datetime.now(timezone.utc)
+        "applied_at": datetime.now(timezone.utc),
+        "tailored_resume_text": body.tailored_resume_text if body else None
     }
     await db.jd_applications.insert_one(doc)
     return {"success": True}
+
+from ..services.openai_service import tailor_resume_for_job
+
+@router.post("/jds/{jd_id}/score-resume")
+async def score_resume(jd_id: str, current_user: UserResponse = Depends(get_current_user)):
+    db = get_database()
+    jd = await db.job_descriptions.find_one({"_id": ObjectId(jd_id)})
+    if not jd:
+        raise HTTPException(404, "JD not found")
+        
+    user = await db.users.find_one({"_id": ObjectId(current_user.id)})
+    resume_text = user.get("resume_text")
+    if not resume_text:
+        raise HTTPException(400, "No resume uploaded. Please upload a resume in your profile first.")
+        
+    jd_text = f"Title: {jd.get('title')}\nDescription: {jd.get('description')}\nSkills: {', '.join(jd.get('required_skills', []))}"
+    
+    result = await tailor_resume_for_job(resume_text, jd_text)
+    return result
 
 
 # ──────────────────────────────────────────────────────────────

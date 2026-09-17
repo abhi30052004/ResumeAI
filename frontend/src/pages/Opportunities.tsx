@@ -12,6 +12,8 @@ export function Opportunities() {
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState<string | null>(null);
   const [selectedOpp, setSelectedOpp] = useState<any | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchOpportunities = async () => {
@@ -27,15 +29,29 @@ export function Opportunities() {
     fetchOpportunities();
   }, []);
 
-  const handleApply = async (id: string) => {
+  const handleApply = async (id: string, tailored_resume_text?: string) => {
     try {
       setApplying(id);
-      await api.post(`/api/manager/jds/${id}/apply`);
+      await api.post(`/api/manager/jds/${id}/apply`, { tailored_resume_text });
       toast('Successfully applied!');
+      setAiAnalysis(null);
     } catch (error: any) {
       toast(error.response?.data?.detail || 'Failed to apply. You may have already applied.');
     } finally {
       setApplying(null);
+    }
+  };
+
+  const handleAnalyzeResume = async (id: string) => {
+    try {
+      setAnalyzing(true);
+      const response = await api.post(`/api/manager/jds/${id}/score-resume`);
+      setAiAnalysis(response.data);
+      toast('Resume analyzed successfully!', 'success');
+    } catch (error: any) {
+      toast(error.response?.data?.detail || 'Failed to analyze resume. Do you have one uploaded?', 'error');
+    } finally {
+      setAnalyzing(false);
     }
   };
 
@@ -227,20 +243,81 @@ export function Opportunities() {
                   )}
                 </div>
               </div>
+
+              {/* AI Analysis Section */}
+              <div className="pt-6 border-t border-gray-100">
+                {!aiAnalysis ? (
+                  <div className="bg-[#635BFF]/5 rounded-2xl p-6 border border-[#635BFF]/10 text-center">
+                    <Sparkles className="w-8 h-8 text-[#635BFF] mx-auto mb-3" />
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Tailor Your Resume with AI</h3>
+                    <p className="text-sm text-gray-600 mb-4">Let our AI analyze your uploaded resume against this job description to give you a custom match score and a tailored resume.</p>
+                    <Button 
+                      className="bg-[#635BFF] hover:bg-[#5046e5] text-white"
+                      onClick={() => handleAnalyzeResume(selectedOpp.id)}
+                      disabled={analyzing}
+                    >
+                      {analyzing ? 'Analyzing...' : 'Analyze My Resume'}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+                      <div>
+                        <h4 className="font-bold text-emerald-900">Tailored Match Score</h4>
+                        <p className="text-sm text-emerald-700">Based on your specific resume</p>
+                      </div>
+                      <div className="text-2xl font-black text-emerald-600">{aiAnalysis.match_score}%</div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider">AI Suggestions for Improvement</h4>
+                      <ul className="space-y-2">
+                        {aiAnalysis.suggestions?.map((sug: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <Sparkles className="w-4 h-4 text-[#635BFF] shrink-0 mt-0.5" />
+                            <span>{sug}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider">Preview: AI Tailored Resume</h4>
+                      <div className="bg-gray-900 text-gray-300 p-4 rounded-xl text-xs font-mono whitespace-pre-wrap max-h-60 overflow-y-auto">
+                        {aiAnalysis.improved_resume_text}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="flex gap-3 pt-6 mt-8 border-t border-gray-100">
-              <Button type="button" variant="outline" onClick={() => setSelectedOpp(null)} className="flex-1">Close</Button>
-              <Button 
-                className="flex-1 bg-[#635BFF] hover:bg-[#5046e5] text-white"
-                onClick={() => {
-                  handleApply(selectedOpp.id);
-                  setSelectedOpp(null);
-                }}
-                disabled={applying === selectedOpp.id}
-              >
-                Apply Now
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 mt-8 border-t border-gray-100">
+              <Button type="button" variant="outline" onClick={() => { setSelectedOpp(null); setAiAnalysis(null); }} className="w-full sm:w-auto px-6">Close</Button>
+              <div className="flex-1 flex flex-col sm:flex-row gap-3">
+                <Button 
+                  className="flex-1 bg-white border border-[#635BFF] text-[#635BFF] hover:bg-[#635BFF]/5"
+                  onClick={() => {
+                    handleApply(selectedOpp.id);
+                    setSelectedOpp(null);
+                  }}
+                  disabled={applying === selectedOpp.id}
+                >
+                  Apply with Standard Resume
+                </Button>
+                {aiAnalysis && (
+                  <Button 
+                    className="flex-1 bg-[#635BFF] hover:bg-[#5046e5] text-white shadow-md shadow-[#635BFF]/20"
+                    onClick={() => {
+                      handleApply(selectedOpp.id, aiAnalysis.improved_resume_text);
+                      setSelectedOpp(null);
+                    }}
+                    disabled={applying === selectedOpp.id}
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" /> Apply with Tailored Resume
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

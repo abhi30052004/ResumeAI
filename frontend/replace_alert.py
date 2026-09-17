@@ -2,14 +2,14 @@ import os
 import re
 
 files_to_update = [
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\pages\ResumeBuilder.tsx",
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\pages\Projects.tsx",
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\pages\Opportunities.tsx",
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\pages\Matches.tsx",
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\pages\ManagerTeam.tsx",
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\pages\ManagerApplications.tsx",
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\pages\Applications.tsx",
-    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\ResumeAI\frontend\src\components\admin\UserModal.tsx"
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\pages\ResumeBuilder.tsx",
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\pages\Projects.tsx",
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\pages\Opportunities.tsx",
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\pages\Matches.tsx",
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\pages\ManagerTeam.tsx",
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\pages\ManagerApplications.tsx",
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\pages\Applications.tsx",
+    r"c:\Users\abhijitbhunia\OneDrive - virtualemployee P Ltd\Desktop\PROFILEIQ\frontend\src\components\admin\UserModal.tsx"
 ]
 
 import_statement = "import { useToast } from '../context/ToastContext';\n"

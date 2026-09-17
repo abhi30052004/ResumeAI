@@ -76,7 +76,7 @@ export function Dashboard() {
                 Welcome back, {user?.full_name?.split(' ')[0]} 👋
               </h1>
               <p className="text-gray-500 mt-2 text-lg">
-                Software Engineer • Employee ID: {user?.employee_id}
+                {user?.target_role || (user?.role === 'manager' ? 'Manager' : 'Software Engineer')} • Employee ID: {user?.employee_id || '—'}
               </p>
             </div>
           </div>

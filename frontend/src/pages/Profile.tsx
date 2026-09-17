@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Save, User, Lock, Bell, Eye, EyeOff, Camera } from 'lucide-react';
 import api from '../lib/api';
 
 export function Profile() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
+  const { toast } = useToast();
   
   const [fullName, setFullName] = useState(user?.full_name || '');
+  const [employeeId, setEmployeeId] = useState(user?.employee_id || '');
   const [targetRole, setTargetRole] = useState(user?.target_role || '');
   const [experienceLevel, setExperienceLevel] = useState(user?.experience_level || '');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -16,11 +19,18 @@ export function Profile() {
   const [showCurrentPw, setShowCurrentPw] = useState(false);
   const [showNewPw, setShowNewPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
-  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'skills'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'skills' | 'resume'>('profile');
+  const [uploadingResume, setUploadingResume] = useState(false);
 
   const [skills, setSkills] = useState<string[]>(user?.skills || []);
   const [newSkill, setNewSkill] = useState('');
+
+  const PREDEFINED_SKILLS = [
+    'React', 'Node.js', 'Python', 'TypeScript', 'JavaScript', 'AWS', 'Docker',
+    'Kubernetes', 'Java', 'C++', 'Go', 'Rust', 'SQL', 'NoSQL', 'MongoDB',
+    'PostgreSQL', 'GraphQL', 'REST API', 'Figma', 'UI/UX', 'Machine Learning',
+    'Data Science', 'FastAPI', 'Express', 'Django', 'Spring Boot', 'Angular', 'Vue.js'
+  ];
 
   const handleAddSkill = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && newSkill.trim()) {
@@ -39,21 +49,44 @@ export function Profile() {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: '', text: '' });
     
     try {
-      await api.put('/api/users/profile', { 
-        full_name: fullName, 
+      const response = await api.put('/api/users/profile', { 
+        full_name: fullName,
+        employee_id: employeeId,
         target_role: targetRole, 
         experience_level: experienceLevel,
         skills: skills 
       });
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      updateUser(response.data);
+      toast('Profile updated successfully!', 'success');
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to update profile. Please try again.' });
+      toast('Failed to update profile. Please try again.', 'error');
     } finally {
       setLoading(false);
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+    }
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword) {
+      toast('Please fill in both password fields', 'error');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await api.put('/api/users/password', {
+        current_password: currentPassword,
+        new_password: newPassword
+      });
+      toast('Password updated successfully!', 'success');
+      setCurrentPassword('');
+      setNewPassword('');
+    } catch (error: any) {
+      toast(error.response?.data?.detail || 'Failed to update password', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,6 +94,7 @@ export function Profile() {
     { key: 'profile', label: 'Profile', icon: User },
     { key: 'security', label: 'Security', icon: Lock },
     { key: 'skills', label: 'Skills & Goals', icon: Bell },
+    { key: 'resume', label: 'Resume', icon: Save },
   ];
 
   return (
@@ -122,12 +156,6 @@ export function Profile() {
             <h3 className="text-xl font-bold text-gray-900 mb-6">Personal Information</h3>
             <form onSubmit={handleSaveProfile} className="space-y-6">
               
-              {message.text && (
-                <div className={`p-4 rounded-xl text-sm font-medium ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                  {message.text}
-                </div>
-              )}
-              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
@@ -153,9 +181,10 @@ export function Profile() {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Employee ID</label>
                 <input
-                  className="flex h-11 w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm text-gray-400 cursor-not-allowed"
-                  value={user?.employee_id || '—'}
-                  disabled
+                  className="flex h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm focus:border-[#635BFF] focus:outline-none focus:ring-2 focus:ring-[#635BFF]/20 transition-all"
+                  value={employeeId}
+                  onChange={(e) => setEmployeeId(e.target.value)}
+                  placeholder="e.g. EMP-1234"
                 />
               </div>
 
@@ -172,7 +201,7 @@ export function Profile() {
         {activeTab === 'security' && (
           <div className="bg-white p-8 rounded-3xl border border-dash-border shadow-sm">
             <h3 className="text-xl font-bold text-gray-900 mb-6">Change Password</h3>
-            <form className="space-y-6">
+            <form onSubmit={handlePasswordChange} className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Current Password</label>
                 <div className="relative">
@@ -202,8 +231,8 @@ export function Profile() {
                 </div>
               </div>
               <div className="flex justify-end pt-2">
-                <Button className="bg-[#635BFF] hover:bg-[#5046e5] text-white gap-2">
-                  <Lock className="w-4 h-4" /> Update Password
+                <Button type="submit" disabled={loading} className="bg-[#635BFF] hover:bg-[#5046e5] text-white gap-2">
+                  <Lock className="w-4 h-4" /> {loading ? 'Updating...' : 'Update Password'}
                 </Button>
               </div>
             </form>
@@ -253,16 +282,31 @@ export function Profile() {
                       </span>
                     ))}
                   </div>
-                  <input
-                    type="text"
-                    value={newSkill}
-                    onChange={(e) => setNewSkill(e.target.value)}
-                    onKeyDown={handleAddSkill}
-                    placeholder="Type a skill and press Enter to add..."
-                    className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-[#635BFF] focus:outline-none focus:ring-1 focus:ring-[#635BFF] transition-all"
-                  />
+                  <div className="flex gap-2 relative">
+                    <input
+                      type="text"
+                      list="skills-suggestions"
+                      value={newSkill}
+                      onChange={(e) => setNewSkill(e.target.value)}
+                      onKeyDown={handleAddSkill}
+                      placeholder="Type a skill and press Enter to add..."
+                      className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-[#635BFF] focus:outline-none focus:ring-1 focus:ring-[#635BFF] transition-all"
+                    />
+                    <datalist id="skills-suggestions">
+                      {PREDEFINED_SKILLS.filter(s => !skills.includes(s)).map(s => (
+                        <option key={s} value={s} />
+                      ))}
+                    </datalist>
+                    <Button 
+                      type="button"
+                      onClick={(e) => handleAddSkill({ key: 'Enter', preventDefault: () => {} } as any)} 
+                      className="h-10 bg-[#635BFF] hover:bg-[#5046e5] text-white px-4 shrink-0 rounded-lg"
+                    >
+                      Add
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-400 mt-2">Click a skill to remove it. Press enter to add a new skill. These skills are used for AI Matching.</p>
+                <p className="text-xs text-gray-400 mt-2">Click a skill to remove it. You can select from suggestions or type your own. These skills are used for AI Matching.</p>
               </div>
 
               <div className="flex justify-end pt-2">
@@ -270,6 +314,69 @@ export function Profile() {
                   <Save className="w-4 h-4" /> Save Goals & Skills
                 </Button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'resume' && (
+          <div className="bg-white p-8 rounded-3xl border border-dash-border shadow-sm">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Resume Document</h3>
+            <p className="text-gray-500 mb-6 text-sm">Upload your latest resume (PDF or DOCX). AI will use this to match you with internal opportunities.</p>
+            
+            <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-10 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer relative"
+                 onClick={() => document.getElementById('resume-upload')?.click()}>
+              {user?.has_resume ? (
+                <>
+                  <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                    <Save className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900">Resume Active</h4>
+                  <p className="text-sm text-gray-500 mt-1 text-center">Your resume is uploaded and being used for AI matching.</p>
+                  <p className="text-sm font-medium text-[#635BFF] mt-4">Click to upload a newer version</p>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 bg-[#635BFF]/10 text-[#635BFF] rounded-full flex items-center justify-center mb-4">
+                    <Camera className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900">Upload Resume</h4>
+                  <p className="text-sm text-gray-500 mt-1 text-center">Click to browse or drag and drop your PDF/DOCX file here.</p>
+                </>
+              )}
+              
+              {uploadingResume && (
+                <div className="absolute inset-0 bg-white/80 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                  <div className="animate-spin w-8 h-8 border-4 border-[#635BFF] border-t-transparent rounded-full" />
+                </div>
+              )}
+              
+              <input 
+                id="resume-upload" 
+                type="file" 
+                accept=".pdf,.docx" 
+                className="hidden" 
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  
+                  setUploadingResume(true);
+                  const formData = new FormData();
+                  formData.append('file', file);
+                  
+                  try {
+                    const response = await api.post('/api/users/resume', formData, {
+                      headers: { 'Content-Type': 'multipart/form-data' }
+                    });
+                    updateUser(response.data);
+                    toast('Resume uploaded successfully!', 'success');
+                  } catch (error) {
+                    toast('Failed to upload resume. Please try a valid PDF or DOCX file.', 'error');
+                  } finally {
+                    setUploadingResume(false);
+                    if (e.target) e.target.value = '';
+                  }
+                }}
+              />
             </div>
           </div>
         )}

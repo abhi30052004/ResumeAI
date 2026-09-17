@@ -22,6 +22,7 @@ class UserBase(BaseModel):
     full_name: str
     employee_id: Optional[str] = None
     photo_url: Optional[str] = None
+    resume_text: Optional[str] = None
 
 class UserCreate(UserBase):
     password: str
@@ -83,6 +84,7 @@ class UserResponse(UserBase):
     education: Optional[list[EducationItem]] = []
     certifications: Optional[list[CertificationItem]] = []
     availability_status: str = "available"
+    has_resume: bool = False
 
 class UserUpdateRole(BaseModel):
     role: RoleEnum

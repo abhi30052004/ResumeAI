@@ -41,6 +41,7 @@ export interface User {
   education?: EducationItem[];
   certifications?: CertificationItem[];
   availability_status?: 'available' | 'partially_allocated' | 'allocated' | 'on_leave' | 'bench';
+  has_resume?: boolean;
 }
 
 interface AuthContextType {
@@ -48,6 +49,7 @@ interface AuthContextType {
   loading: boolean;
   login: (token: string) => void;
   logout: () => void;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -87,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateUser: setUser }}>
       {children}
     </AuthContext.Provider>
   );
